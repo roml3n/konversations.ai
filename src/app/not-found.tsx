@@ -41,11 +41,11 @@ export default function NotFound() {
           <section className="pointer-events-none w-full absolute top-[50%] border border-red-500 z-20 flex flex-col items-center gap-6 text-center">
             <div className="w-full">
               {gameState === "gameOver" ? (
-                <>
+                <div className="w-full flex flex-col gap-4">
                   <h1 className="text-3xl font-semibold tracking-tight">
                     Game Over!
                   </h1>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center gap-4">
                     <Button
                       href="#"
                       label="RETRY"
@@ -60,7 +60,7 @@ export default function NotFound() {
                       size="small"
                     />
                   </div>
-                </>
+                </div>
               ) : (
                 <div className="flex flex-col items-center gap-6">
                   <div className="flex flex-col items-center gap-3">
