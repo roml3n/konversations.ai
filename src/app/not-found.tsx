@@ -15,9 +15,9 @@ export default function NotFound() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start gap-6 px-4 py-10">
-      <div className="relative h-[560px]">
-        <SpaceShooter404 ref={gameRef} className="relative" />
+    <main className="flex min-h-screen flex-col items-center justify-start gap-6 py-10">
+      <div className="relative w-full">
+        <SpaceShooter404 ref={gameRef} className="relative w-full" />
       </div>
 
       <section className="flex w-full max-w-5xl flex-col items-center gap-6 text-center">

@@ -40,7 +40,6 @@ type Explosion = {
 
 export type SpaceShooter404Handle = { start: () => void; restart: () => void };
 
-const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 560;
 const GRID_COLS = (enemyShipPositions as { columns: number }).columns - 2; // A..V
 const GRID_ROWS = (enemyShipPositions as { rows: number }).rows;
@@ -50,7 +49,6 @@ const PLAYER_WIDTH = 20;
 const PLAYER_HEIGHT = 20;
 const PLAYER_BOTTOM_MARGIN = 64;
 const PLAYER_COLOR = "#ffffff";
-const BG_COLOR = "#000000";
 const ENEMY_COLOR = "#ffffff";
 const LASER_COLOR = "#ffffff";
 const ENEMY_BULLET_SPEED = 2.0;
@@ -112,12 +110,14 @@ const SpaceShooter404 = forwardRef<
   { className?: string }
 >(function SpaceShooter404({ className }, ref) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
 
   const [hasStarted, setHasStarted] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [isVictory, setIsVictory] = useState(false);
   const [score, setScore] = useState(0);
+  const [canvasWidth, setCanvasWidth] = useState(800);
 
   const playerRef = useRef<{
     position: Vector2;
@@ -139,9 +139,7 @@ const SpaceShooter404 = forwardRef<
 
   const gridPixelWidth =
     GRID_COLS * GRID_CELL_SIZE + (GRID_COLS - 1) * GRID_GAP;
-  const gridPixelHeight =
-    GRID_ROWS * GRID_CELL_SIZE + (GRID_ROWS - 1) * GRID_GAP;
-  const gridOffsetX = (CANVAS_WIDTH - gridPixelWidth) / 2;
+  const gridOffsetX = (canvasWidth - gridPixelWidth) / 2;
   const gridOffsetY = 60;
 
   const isChargingRef = useRef(false);
@@ -151,7 +149,7 @@ const SpaceShooter404 = forwardRef<
   const initializePlayer = useCallback(() => {
     playerRef.current = {
       position: {
-        x: CANVAS_WIDTH / 2 - PLAYER_WIDTH / 2,
+        x: canvasWidth / 2 - PLAYER_WIDTH / 2,
         y: CANVAS_HEIGHT - PLAYER_BOTTOM_MARGIN - PLAYER_HEIGHT,
       },
       width: PLAYER_WIDTH,
@@ -159,7 +157,7 @@ const SpaceShooter404 = forwardRef<
     };
     playerBulletsRef.current = [];
     playerShootCooldownRef.current = 0;
-  }, []);
+  }, [canvasWidth]);
 
   const buildEnemiesFromMask = useCallback(() => {
     const enemies: Enemy[] = [];
@@ -199,51 +197,6 @@ const SpaceShooter404 = forwardRef<
   useEffect(() => {
     resetGame();
   }, [resetGame]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") inputRef.current.left = true;
-      if (e.key === "ArrowRight") inputRef.current.right = true;
-      if (e.code === "Space") {
-        e.preventDefault();
-        if (!isChargingRef.current) {
-          isChargingRef.current = true;
-          chargeStartTsRef.current = performance.now();
-        }
-        inputRef.current.shootHeld = true;
-        if (!hasStarted && !isGameOver) setHasStarted(true);
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") inputRef.current.left = false;
-      if (e.key === "ArrowRight") inputRef.current.right = false;
-      if (e.code === "Space") {
-        inputRef.current.shootHeld = false;
-        if (isChargingRef.current) {
-          const heldMs = performance.now() - chargeStartTsRef.current;
-          const clamped = Math.min(3000, Math.max(0, heldMs));
-          const TAP_THRESHOLD_MS = 150;
-          if (clamped < TAP_THRESHOLD_MS) {
-            shootPlayerBullet();
-          } else {
-            const shots = Math.max(
-              3,
-              Math.min(10, Math.round((clamped / 3000) * 10))
-            );
-            shootBurst(shots);
-          }
-          isChargingRef.current = false;
-          chargeProgressRef.current = 0;
-        }
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [hasStarted, isGameOver]);
 
   const shootPlayerBullet = useCallback(() => {
     if (!playerRef.current) return;
@@ -291,6 +244,62 @@ const SpaceShooter404 = forwardRef<
       playerBulletsRef.current.push(bullet);
     }
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setCanvasWidth(containerRef.current.offsetWidth);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") inputRef.current.left = true;
+      if (e.key === "ArrowRight") inputRef.current.right = true;
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (!isChargingRef.current) {
+          isChargingRef.current = true;
+          chargeStartTsRef.current = performance.now();
+        }
+        inputRef.current.shootHeld = true;
+        if (!hasStarted && !isGameOver) setHasStarted(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") inputRef.current.left = false;
+      if (e.key === "ArrowRight") inputRef.current.right = false;
+      if (e.code === "Space") {
+        inputRef.current.shootHeld = false;
+        if (isChargingRef.current) {
+          const heldMs = performance.now() - chargeStartTsRef.current;
+          const clamped = Math.min(3000, Math.max(0, heldMs));
+          const TAP_THRESHOLD_MS = 150;
+          if (clamped < TAP_THRESHOLD_MS) {
+            shootPlayerBullet();
+          } else {
+            const shots = Math.max(
+              3,
+              Math.min(10, Math.round((clamped / 3000) * 10))
+            );
+            shootBurst(shots);
+          }
+          isChargingRef.current = false;
+          chargeProgressRef.current = 0;
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [hasStarted, isGameOver, shootPlayerBullet, shootBurst]);
 
   const enemiesShoot = useCallback((dtMs: number) => {
     const MAX_ENEMY_BULLETS_ON_SCREEN = 6;
@@ -343,7 +352,7 @@ const SpaceShooter404 = forwardRef<
       player.position.x = clamp(
         player.position.x,
         8,
-        CANVAS_WIDTH - PLAYER_WIDTH - 8
+        canvasWidth - PLAYER_WIDTH - 8
       );
 
       playerShootCooldownRef.current = Math.max(
@@ -383,7 +392,7 @@ const SpaceShooter404 = forwardRef<
         enemy.position.x += enemy.velocity.x;
         if (
           enemy.position.x <= 8 ||
-          enemy.position.x + enemy.width >= CANVAS_WIDTH - 8
+          enemy.position.x + enemy.width >= canvasWidth - 8
         ) {
           enemy.velocity.x *= -1;
           enemy.position.y += 8;
@@ -470,82 +479,84 @@ const SpaceShooter404 = forwardRef<
         .map((ex) => ({ ...ex, ageMs: ex.ageMs + dtMs }))
         .filter((ex) => ex.ageMs < ex.durationMs);
     },
-    [enemiesShoot]
+    [enemiesShoot, canvasWidth]
   );
 
-  const draw = useCallback((ctx: CanvasRenderingContext2D) => {
-    ctx.fillStyle = BG_COLOR;
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D) => {
+      ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
 
-    // Player
-    const player = playerRef.current;
-    if (player) {
-      const strokeWidth = 1;
-      const inset = strokeWidth;
-      const maxSquish = 8;
-      const squishY = maxSquish * chargeProgressRef.current;
-      const drawH = Math.max(8, PLAYER_HEIGHT - squishY);
-      const offsetY = (PLAYER_HEIGHT - drawH) / 2;
-      drawRoundedRect(
-        ctx,
-        player.position.x + inset,
-        player.position.y + inset + offsetY,
-        PLAYER_WIDTH - inset * 2,
-        drawH - inset * 2,
-        2
-      );
-      ctx.fillStyle = "rgba(255,255,255,0.20)";
-      ctx.fill();
-      ctx.strokeStyle = PLAYER_COLOR;
-      ctx.lineWidth = strokeWidth;
-      ctx.stroke();
-    }
+      // Player
+      const player = playerRef.current;
+      if (player) {
+        const strokeWidth = 1;
+        const inset = strokeWidth;
+        const maxSquish = 8;
+        const squishY = maxSquish * chargeProgressRef.current;
+        const drawH = Math.max(8, PLAYER_HEIGHT - squishY);
+        const offsetY = (PLAYER_HEIGHT - drawH) / 2;
+        drawRoundedRect(
+          ctx,
+          player.position.x + inset,
+          player.position.y + inset + offsetY,
+          PLAYER_WIDTH - inset * 2,
+          drawH - inset * 2,
+          2
+        );
+        ctx.fillStyle = "rgba(255,255,255,0.20)";
+        ctx.fill();
+        ctx.strokeStyle = PLAYER_COLOR;
+        ctx.lineWidth = strokeWidth;
+        ctx.stroke();
+      }
 
-    // Enemies
-    for (const enemy of enemiesRef.current) {
-      if (!enemy.alive) continue;
-      const strokeWidth = 1;
-      const inset = strokeWidth;
-      drawRoundedRect(
-        ctx,
-        enemy.position.x + inset,
-        enemy.position.y + inset,
-        enemy.width - inset * 2,
-        enemy.height - inset * 2,
-        2
-      );
-      ctx.fillStyle = "rgba(255,255,255,0.20)";
-      ctx.fill();
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = strokeWidth;
-      ctx.stroke();
-    }
+      // Enemies
+      for (const enemy of enemiesRef.current) {
+        if (!enemy.alive) continue;
+        const strokeWidth = 1;
+        const inset = strokeWidth;
+        drawRoundedRect(
+          ctx,
+          enemy.position.x + inset,
+          enemy.position.y + inset,
+          enemy.width - inset * 2,
+          enemy.height - inset * 2,
+          2
+        );
+        ctx.fillStyle = "rgba(255,255,255,0.20)";
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = strokeWidth;
+        ctx.stroke();
+      }
 
-    // Explosions
-    for (const ex of explosionsRef.current) {
-      const t = Math.max(0, Math.min(1, ex.ageMs / ex.durationMs));
-      const radius = ex.maxRadius * t;
-      const alpha = 1 - t;
-      ctx.beginPath();
-      ctx.arc(ex.x, ex.y, radius, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.fillStyle = `rgba(255,255,255,${0.15 * alpha})`;
-      ctx.fill();
-      ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-      ctx.lineWidth = 1 + 1.5 * (1 - t);
-      ctx.stroke();
-    }
+      // Explosions
+      for (const ex of explosionsRef.current) {
+        const t = Math.max(0, Math.min(1, ex.ageMs / ex.durationMs));
+        const radius = ex.maxRadius * t;
+        const alpha = 1 - t;
+        ctx.beginPath();
+        ctx.arc(ex.x, ex.y, radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(255,255,255,${0.15 * alpha})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+        ctx.lineWidth = 1 + 1.5 * (1 - t);
+        ctx.stroke();
+      }
 
-    // Bullets
-    for (const b of playerBulletsRef.current) {
-      ctx.fillStyle = b.color;
-      ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
-    }
-    for (const b of enemyBulletsRef.current) {
-      ctx.fillStyle = b.color;
-      ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
-    }
-  }, []);
+      // Bullets
+      for (const b of playerBulletsRef.current) {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
+      }
+      for (const b of enemyBulletsRef.current) {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
+      }
+    },
+    [canvasWidth]
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -581,7 +592,7 @@ const SpaceShooter404 = forwardRef<
   ]);
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       {/* Score */}
       <div
         className="pointer-events-none absolute right-2 top-2 z-10 select-none text-xs text-white/80"
@@ -630,11 +641,12 @@ const SpaceShooter404 = forwardRef<
 
       <canvas
         ref={canvasRef}
-        width={CANVAS_WIDTH}
+        width={canvasWidth}
         height={CANVAS_HEIGHT}
         role="img"
         aria-label="Space shooter canvas"
-        className="block rounded border border-white/20 bg-black"
+        className="block w-full"
+        style={{ height: `${CANVAS_HEIGHT}px` }}
       />
     </div>
   );
