@@ -9,7 +9,7 @@ import Button from "@/components/Button";
 export default function NotFound() {
   const gameRef = useRef<SpaceShooter404Handle | null>(null);
   const [gameState, setGameState] = useState<
-    "initial" | "playing" | "gameOver"
+    "initial" | "playing" | "gameOver" | "victory"
   >("initial");
 
   const handleStartClick = (e: React.MouseEvent) => {
@@ -32,6 +32,10 @@ export default function NotFound() {
     setGameState("gameOver");
   }, []);
 
+  const handleVictory = React.useCallback(() => {
+    setGameState("victory");
+  }, []);
+
   return (
     <main className="relative h-screen w-full overflow-hidden">
       <SpaceShooter404
@@ -39,6 +43,7 @@ export default function NotFound() {
         className="absolute inset-0 m-8 mb-16 border border-yellow-500"
         onGameStart={handleGameStart}
         onGameOver={handleGameOver}
+        onVictory={handleVictory}
       />
 
       {gameState !== "playing" && (
@@ -54,6 +59,27 @@ export default function NotFound() {
                     <Button
                       href="#"
                       label="RETRY"
+                      variant="solid"
+                      size="small"
+                      onClick={handleRetryClick}
+                    />
+                    <Button
+                      href="/"
+                      label="GO HOME"
+                      variant="outline"
+                      size="small"
+                    />
+                  </div>
+                </div>
+              ) : gameState === "victory" ? (
+                <div className="w-full flex flex-col gap-4">
+                  <h1 className="text-3xl font-semibold tracking-tight">
+                    Enemy fleet destroyed!
+                  </h1>
+                  <div className="pointer-events-auto flex items-center justify-center gap-4">
+                    <Button
+                      href="#"
+                      label="NEXT LEVEL"
                       variant="solid"
                       size="small"
                       onClick={handleRetryClick}

@@ -106,8 +106,16 @@ const FOUR_ZERO_FOUR_MASK: boolean[][] = (() => {
 
 const SpaceShooter404 = forwardRef<
   SpaceShooter404Handle,
-  { className?: string; onGameStart?: () => void; onGameOver?: () => void }
->(function SpaceShooter404({ className, onGameStart, onGameOver }, ref) {
+  {
+    className?: string;
+    onGameStart?: () => void;
+    onGameOver?: () => void;
+    onVictory?: () => void;
+  }
+>(function SpaceShooter404(
+  { className, onGameStart, onGameOver, onVictory },
+  ref
+) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -480,13 +488,14 @@ const SpaceShooter404 = forwardRef<
       if (!anyAlive) {
         setIsVictory(true);
         setHasStarted(false);
+        onVictory?.();
       }
 
       explosionsRef.current = explosionsRef.current
         .map((ex) => ({ ...ex, ageMs: ex.ageMs + dtMs }))
         .filter((ex) => ex.ageMs < ex.durationMs);
     },
-    [enemiesShoot, canvasWidth, canvasHeight, onGameOver]
+    [enemiesShoot, canvasWidth, canvasHeight, onGameOver, onVictory]
   );
 
   const draw = useCallback(
