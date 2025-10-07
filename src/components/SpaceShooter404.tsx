@@ -267,6 +267,9 @@ const SpaceShooter404 = forwardRef<
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't allow any keyboard actions during victory
+      if (isVictory) return;
+
       if (e.key === "ArrowLeft") inputRef.current.left = true;
       if (e.key === "ArrowRight") inputRef.current.right = true;
       if (e.code === "Space") {
@@ -283,6 +286,9 @@ const SpaceShooter404 = forwardRef<
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
+      // Don't allow any keyboard actions during victory
+      if (isVictory) return;
+
       if (e.key === "ArrowLeft") inputRef.current.left = false;
       if (e.key === "ArrowRight") inputRef.current.right = false;
       if (e.code === "Space") {
@@ -311,7 +317,14 @@ const SpaceShooter404 = forwardRef<
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [hasStarted, isGameOver, shootPlayerBullet, shootBurst, onGameStart]);
+  }, [
+    hasStarted,
+    isGameOver,
+    isVictory,
+    shootPlayerBullet,
+    shootBurst,
+    onGameStart,
+  ]);
 
   const enemiesShoot = useCallback((dtMs: number) => {
     const MAX_ENEMY_BULLETS_ON_SCREEN = 6;

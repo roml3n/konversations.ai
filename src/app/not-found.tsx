@@ -50,8 +50,8 @@ export default function NotFound() {
 
       {gameState !== "playing" && (
         <>
-          {/* Dimmed background overlay for victory screen */}
-          {gameState === "victory" && (
+          {/* Dimmed background overlay for victory and game over screens */}
+          {(gameState === "victory" || gameState === "gameOver") && (
             <div className="absolute inset-0 bg-black/60 z-10" />
           )}
 
