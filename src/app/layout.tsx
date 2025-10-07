@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,15 +7,23 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-instrument-sans',
 });
 
 export const metadata: Metadata = {
   title: "konversations.ai - AI-Powered Conversations",
-  description: "Your intelligent conversation platform powered by AI. Experience natural, intelligent conversations with advanced AI technology.",
-  keywords: ["AI", "conversations", "chatbot", "artificial intelligence", "natural language processing"],
+  description:
+    "Your intelligent conversation platform powered by AI. Experience natural, intelligent conversations with advanced AI technology.",
+  keywords: [
+    "AI",
+    "conversations",
+    "chatbot",
+    "artificial intelligence",
+    "natural language processing",
+  ],
 };
 
 export default function RootLayout({
@@ -26,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${instrumentSans.variable} font-feature-settings-[ss02] antialiased`}
       >
         {children}
       </body>

@@ -39,7 +39,10 @@ export default function NotFound() {
   }, []);
 
   return (
-    <main className="relative h-screen w-full overflow-hidden">
+    <main
+      className="relative h-screen w-full overflow-hidden font-sans"
+      style={{ fontFeatureSettings: '"ss02" 1' }}
+    >
       <SpaceShooter404
         ref={gameRef}
         className="absolute inset-0 m-8 mb-16 border border-yellow-500"
@@ -138,16 +141,22 @@ export default function NotFound() {
 
       {(gameState === "initial" || gameState === "playing") && (
         <div className="absolute bottom-6 w-full pointer-events-auto mt-2 flex flex-col text-white/80 items-center gap-4">
-          <p className="text-lg">
+          <p className="text-lg font-normal">
             Press{" "}
-            <kbd className="rounded border border-white/60 px-2 py-0.5">
+            <kbd className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
               SPACE
             </kbd>{" "}
             to shoot. Hold for more power.
           </p>
-          <p className="text-lg">
-            Use <span className="rounded border border-white/60 px-1">←</span>{" "}
-            and <span className="rounded border border-white/60 px-1">→</span>{" "}
+          <p className="text-lg font-normal">
+            Use{" "}
+            <span className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
+              ←
+            </span>{" "}
+            and{" "}
+            <span className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
+              →
+            </span>{" "}
             to move.
           </p>
         </div>

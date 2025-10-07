@@ -40,8 +40,8 @@ export default function Button({
 
   const innerTextClass =
     variant === "solid"
-      ? "justify-start text-neutral-900 text-base font-medium font-['Spline_Sans_Mono'] uppercase"
-      : "justify-start text-white text-base font-medium font-['Spline_Sans_Mono'] uppercase";
+      ? "justify-start text-neutral-900 text-base font-medium font-normal uppercase"
+      : "justify-start text-white text-base font-medium font-normal uppercase";
 
   return (
     <Link
