@@ -40,7 +40,6 @@ type Explosion = {
 
 export type SpaceShooter404Handle = { start: () => void; restart: () => void };
 
-const CANVAS_HEIGHT = 560;
 const GRID_COLS = (enemyShipPositions as { columns: number }).columns - 2; // A..V
 const GRID_ROWS = (enemyShipPositions as { rows: number }).rows;
 const GRID_CELL_SIZE = 24;
@@ -107,8 +106,8 @@ const FOUR_ZERO_FOUR_MASK: boolean[][] = (() => {
 
 const SpaceShooter404 = forwardRef<
   SpaceShooter404Handle,
-  { className?: string }
->(function SpaceShooter404({ className }, ref) {
+  { className?: string; onGameOver?: () => void }
+>(function SpaceShooter404({ className, onGameOver }, ref) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -118,6 +117,7 @@ const SpaceShooter404 = forwardRef<
   const [isVictory, setIsVictory] = useState(false);
   const [score, setScore] = useState(0);
   const [canvasWidth, setCanvasWidth] = useState(800);
+  const [canvasHeight, setCanvasHeight] = useState(600);
 
   const playerRef = useRef<{
     position: Vector2;
@@ -150,14 +150,14 @@ const SpaceShooter404 = forwardRef<
     playerRef.current = {
       position: {
         x: canvasWidth / 2 - PLAYER_WIDTH / 2,
-        y: CANVAS_HEIGHT - PLAYER_BOTTOM_MARGIN - PLAYER_HEIGHT,
+        y: canvasHeight - PLAYER_BOTTOM_MARGIN - PLAYER_HEIGHT,
       },
       width: PLAYER_WIDTH,
       height: PLAYER_HEIGHT,
     };
     playerBulletsRef.current = [];
     playerShootCooldownRef.current = 0;
-  }, [canvasWidth]);
+  }, [canvasWidth, canvasHeight]);
 
   const buildEnemiesFromMask = useCallback(() => {
     const enemies: Enemy[] = [];
@@ -249,6 +249,7 @@ const SpaceShooter404 = forwardRef<
     const handleResize = () => {
       if (containerRef.current) {
         setCanvasWidth(containerRef.current.offsetWidth);
+        setCanvasHeight(containerRef.current.offsetHeight);
       }
     };
     handleResize();
@@ -383,7 +384,7 @@ const SpaceShooter404 = forwardRef<
             y: b.position.y + b.velocityY,
           },
         }))
-        .filter((b) => b.position.y <= CANVAS_HEIGHT + 16);
+        .filter((b) => b.position.y <= canvasHeight + 16);
 
       for (const enemy of enemiesRef.current) {
         if (!enemy.alive) continue;
@@ -451,6 +452,7 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
+          onGameOver?.();
           return;
         }
       }
@@ -460,11 +462,13 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
+          onGameOver?.();
           return;
         }
         if (e.position.y + e.height >= player.position.y) {
           setIsGameOver(true);
           setHasStarted(false);
+          onGameOver?.();
           return;
         }
       }
@@ -479,12 +483,12 @@ const SpaceShooter404 = forwardRef<
         .map((ex) => ({ ...ex, ageMs: ex.ageMs + dtMs }))
         .filter((ex) => ex.ageMs < ex.durationMs);
     },
-    [enemiesShoot, canvasWidth]
+    [enemiesShoot, canvasWidth, canvasHeight, onGameOver]
   );
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D) => {
-      ctx.clearRect(0, 0, canvasWidth, CANVAS_HEIGHT);
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
       // Player
       const player = playerRef.current;
@@ -555,7 +559,7 @@ const SpaceShooter404 = forwardRef<
         ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
       }
     },
-    [canvasWidth]
+    [canvasWidth, canvasHeight]
   );
 
   useEffect(() => {
@@ -642,11 +646,10 @@ const SpaceShooter404 = forwardRef<
       <canvas
         ref={canvasRef}
         width={canvasWidth}
-        height={CANVAS_HEIGHT}
+        height={canvasHeight}
         role="img"
         aria-label="Space shooter canvas"
-        className="block w-full"
-        style={{ height: `${CANVAS_HEIGHT}px` }}
+        className="block h-full w-full"
       />
     </div>
   );
