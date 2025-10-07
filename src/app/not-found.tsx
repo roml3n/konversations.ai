@@ -11,6 +11,7 @@ export default function NotFound() {
   const [gameState, setGameState] = useState<
     "initial" | "playing" | "gameOver" | "victory"
   >("initial");
+  const [finalScore, setFinalScore] = useState(0);
 
   const handleStartClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,7 +33,8 @@ export default function NotFound() {
     setGameState("gameOver");
   }, []);
 
-  const handleVictory = React.useCallback(() => {
+  const handleVictory = React.useCallback((score: number) => {
+    setFinalScore(score);
     setGameState("victory");
   }, []);
 
@@ -48,6 +50,11 @@ export default function NotFound() {
 
       {gameState !== "playing" && (
         <>
+          {/* Dimmed background overlay for victory screen */}
+          {gameState === "victory" && (
+            <div className="absolute inset-0 bg-black/60 z-10" />
+          )}
+
           <section className="pointer-events-none w-full absolute top-[50%] border border-red-500 z-20 flex flex-col items-center gap-6 text-center">
             <div className="w-full">
               {gameState === "gameOver" ? (
@@ -73,9 +80,14 @@ export default function NotFound() {
                 </div>
               ) : gameState === "victory" ? (
                 <div className="w-full flex flex-col gap-4">
-                  <h1 className="text-3xl font-semibold tracking-tight">
-                    Enemy fleet destroyed!
-                  </h1>
+                  <div className="flex flex-col gap-2">
+                    <h1 className="text-3xl font-semibold tracking-tight">
+                      Enemy fleet destroyed!
+                    </h1>
+                    <p className="text-2xl text-white/90 font-mono">
+                      Score: {finalScore}
+                    </p>
+                  </div>
                   <div className="pointer-events-auto flex items-center justify-center gap-4">
                     <Button
                       href="#"
@@ -121,26 +133,24 @@ export default function NotFound() {
               )}
             </div>
           </section>
-
-          {gameState === "initial" && (
-            <div className="absolute bottom-6 w-full pointer-events-auto mt-2 flex flex-col text-white/80 items-center gap-4">
-              <p className="text-lg">
-                Press{" "}
-                <kbd className="rounded border border-white/60 px-2 py-0.5">
-                  SPACE
-                </kbd>{" "}
-                to shoot. Hold for more power.
-              </p>
-              <p className="text-lg">
-                Use{" "}
-                <span className="rounded border border-white/60 px-1">←</span>{" "}
-                and{" "}
-                <span className="rounded border border-white/60 px-1">→</span>{" "}
-                to move.
-              </p>
-            </div>
-          )}
         </>
+      )}
+
+      {(gameState === "initial" || gameState === "playing") && (
+        <div className="absolute bottom-6 w-full pointer-events-auto mt-2 flex flex-col text-white/80 items-center gap-4">
+          <p className="text-lg">
+            Press{" "}
+            <kbd className="rounded border border-white/60 px-2 py-0.5">
+              SPACE
+            </kbd>{" "}
+            to shoot. Hold for more power.
+          </p>
+          <p className="text-lg">
+            Use <span className="rounded border border-white/60 px-1">←</span>{" "}
+            and <span className="rounded border border-white/60 px-1">→</span>{" "}
+            to move.
+          </p>
+        </div>
       )}
     </main>
   );

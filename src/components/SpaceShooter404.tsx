@@ -110,7 +110,7 @@ const SpaceShooter404 = forwardRef<
     className?: string;
     onGameStart?: () => void;
     onGameOver?: () => void;
-    onVictory?: () => void;
+    onVictory?: (score: number) => void;
   }
 >(function SpaceShooter404(
   { className, onGameStart, onGameOver, onVictory },
@@ -488,14 +488,14 @@ const SpaceShooter404 = forwardRef<
       if (!anyAlive) {
         setIsVictory(true);
         setHasStarted(false);
-        onVictory?.();
+        onVictory?.(score);
       }
 
       explosionsRef.current = explosionsRef.current
         .map((ex) => ({ ...ex, ageMs: ex.ageMs + dtMs }))
         .filter((ex) => ex.ageMs < ex.durationMs);
     },
-    [enemiesShoot, canvasWidth, canvasHeight, onGameOver, onVictory]
+    [enemiesShoot, canvasWidth, canvasHeight, onGameOver, onVictory, score]
   );
 
   const draw = useCallback(
