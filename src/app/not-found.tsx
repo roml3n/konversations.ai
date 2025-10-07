@@ -24,15 +24,20 @@ export default function NotFound() {
     setGameState("playing");
   };
 
-  const handleGameOver = () => {
+  const handleGameStart = React.useCallback(() => {
+    setGameState("playing");
+  }, []);
+
+  const handleGameOver = React.useCallback(() => {
     setGameState("gameOver");
-  };
+  }, []);
 
   return (
     <main className="relative h-screen w-full overflow-hidden">
       <SpaceShooter404
         ref={gameRef}
         className="absolute inset-0 m-8 mb-16 border border-yellow-500"
+        onGameStart={handleGameStart}
         onGameOver={handleGameOver}
       />
 
@@ -45,7 +50,7 @@ export default function NotFound() {
                   <h1 className="text-3xl font-semibold tracking-tight">
                     Game Over!
                   </h1>
-                  <div className="flex items-center justify-center gap-4">
+                  <div className="pointer-events-auto flex items-center justify-center gap-4">
                     <Button
                       href="#"
                       label="RETRY"
@@ -71,7 +76,7 @@ export default function NotFound() {
                       Defeat the enemies to get back home.
                     </p>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="pointer-events-auto flex items-center gap-4">
                     <Button
                       href="#"
                       label="START"

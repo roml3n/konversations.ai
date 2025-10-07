@@ -106,8 +106,8 @@ const FOUR_ZERO_FOUR_MASK: boolean[][] = (() => {
 
 const SpaceShooter404 = forwardRef<
   SpaceShooter404Handle,
-  { className?: string; onGameOver?: () => void }
->(function SpaceShooter404({ className, onGameOver }, ref) {
+  { className?: string; onGameStart?: () => void; onGameOver?: () => void }
+>(function SpaceShooter404({ className, onGameStart, onGameOver }, ref) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -268,7 +268,10 @@ const SpaceShooter404 = forwardRef<
           chargeStartTsRef.current = performance.now();
         }
         inputRef.current.shootHeld = true;
-        if (!hasStarted && !isGameOver) setHasStarted(true);
+        if (!hasStarted && !isGameOver) {
+          setHasStarted(true);
+          onGameStart?.();
+        }
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -300,7 +303,7 @@ const SpaceShooter404 = forwardRef<
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [hasStarted, isGameOver, shootPlayerBullet, shootBurst]);
+  }, [hasStarted, isGameOver, shootPlayerBullet, shootBurst, onGameStart]);
 
   const enemiesShoot = useCallback((dtMs: number) => {
     const MAX_ENEMY_BULLETS_ON_SCREEN = 6;
@@ -585,10 +588,12 @@ const SpaceShooter404 = forwardRef<
     if (isGameOver || isVictory) {
       resetGame();
       setHasStarted(true);
+      onGameStart?.();
       return;
     }
     setHasStarted(true);
-  }, [isGameOver, isVictory, resetGame]);
+    onGameStart?.();
+  }, [isGameOver, isVictory, resetGame, onGameStart]);
 
   useImperativeHandle(ref, () => ({ start: handleStart, restart: resetGame }), [
     handleStart,
