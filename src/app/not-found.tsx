@@ -32,38 +32,49 @@ export default function NotFound() {
     <main className="relative h-screen w-full overflow-hidden">
       <SpaceShooter404
         ref={gameRef}
-        className="absolute inset-0"
+        className="absolute inset-0 m-8 mb-16 border border-yellow-500"
         onGameOver={handleGameOver}
       />
 
       {gameState !== "playing" && (
-        <section className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-6 pb-32 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            {gameState === "gameOver" ? "Game Over" : "Page not found."}
-          </h1>
+        <section className="pointer-events-none w-full absolute top-[50%] border border-red-500 z-20 flex flex-col items-center gap-6 text-center">
+          <div className="w-full">
+            {gameState === "gameOver" ? (
+              <>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Game Over!
+                </h1>
+                <div className="flex items-center gap-4">
+                  <Button
+                    href="#"
+                    label="RETRY"
+                    variant="solid"
+                    size="small"
+                    onClick={handleRetryClick}
+                  />
+                  <Button
+                    href="/"
+                    label="GO HOME"
+                    variant="outline"
+                    size="small"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                  Uh-oh! Page not found.
+                </h1>
+                <p className="text-lg text-white/80">
+                  Defeat the enemies to get back home.
+                </p>
+              </>
+            )}
+          </div>
 
           {gameState === "initial" && (
-            <div className="flex flex-col items-center gap-3 text-white/80">
-              <p className="text-lg">
-                Press or hold{" "}
-                <kbd className="rounded border border-white/60 px-2 py-0.5">
-                  SPACE
-                </kbd>{" "}
-                to start and shoot.
-              </p>
-              <p className="text-lg">
-                Use{" "}
-                <span className="rounded border border-white/60 px-1">←</span>{" "}
-                and{" "}
-                <span className="rounded border border-white/60 px-1">→</span>{" "}
-                to move.
-              </p>
-            </div>
-          )}
-
-          <div className="pointer-events-auto mt-2 flex items-center gap-4">
-            {gameState === "initial" && (
-              <>
+            <>
+              <div className="flex items-center gap-4">
                 <Button
                   href="#"
                   label="START"
@@ -77,26 +88,32 @@ export default function NotFound() {
                   variant="outline"
                   size="small"
                 />
-              </>
-            )}
-            {gameState === "gameOver" && (
-              <>
-                <Button
-                  href="#"
-                  label="RETRY"
-                  variant="solid"
-                  size="small"
-                  onClick={handleRetryClick}
-                />
-                <Button
-                  href="/"
-                  label="GO HOME"
-                  variant="outline"
-                  size="small"
-                />
-              </>
-            )}
-          </div>
+              </div>
+
+              <div className="absolute bottom-0 pointer-events-auto mt-2 flex items-center gap-4">
+                <div className="flex flex-col items-center gap-3 text-white/80">
+                  <p className="text-lg">
+                    Press{" "}
+                    <kbd className="rounded border border-white/60 px-2 py-0.5">
+                      SPACE
+                    </kbd>{" "}
+                    to shoot. Hold for more power.
+                  </p>
+                  <p className="text-lg">
+                    Use{" "}
+                    <span className="rounded border border-white/60 px-1">
+                      ←
+                    </span>{" "}
+                    and{" "}
+                    <span className="rounded border border-white/60 px-1">
+                      →
+                    </span>{" "}
+                    to move.
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </section>
       )}
     </main>
