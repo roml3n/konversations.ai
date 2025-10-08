@@ -49,7 +49,7 @@ export default function NotFound() {
     >
       <SpaceShooter404
         ref={gameRef}
-        className="absolute inset-0 m-8 mb-16 border border-yellow-500"
+        className="absolute inset-0 m-8 mb-16"
         onGameStart={handleGameStart}
         onGameOver={handleGameOver}
         onVictory={handleVictory}
@@ -62,7 +62,7 @@ export default function NotFound() {
             <div className="absolute inset-0 bg-black/60 z-10" />
           )}
 
-          <section className="pointer-events-none w-full absolute top-[50%] border border-red-500 z-20 flex flex-col items-center gap-6 text-center">
+          <section className="pointer-events-none w-full absolute top-[50%] z-20 flex flex-col items-center gap-6 text-center">
             <div className="w-full">
               {gameState === "gameOver" ? (
                 <div className="w-full flex flex-col gap-4">
@@ -73,16 +73,10 @@ export default function NotFound() {
                     <Button
                       href="#"
                       label="RETRY"
-                      variant="solid"
-                      size="small"
+                      variant="primary"
                       onClick={handleRetryClick}
                     />
-                    <Button
-                      href="/"
-                      label="GO HOME"
-                      variant="outline"
-                      size="small"
-                    />
+                    <Button href="/" label="GO HOME" variant="secondary" />
                   </div>
                 </div>
               ) : gameState === "victory" ? (
@@ -99,16 +93,10 @@ export default function NotFound() {
                     <Button
                       href="#"
                       label="NEXT LEVEL"
-                      variant="solid"
-                      size="small"
+                      variant="primary"
                       onClick={handleRetryClick}
                     />
-                    <Button
-                      href="/"
-                      label="GO HOME"
-                      variant="outline"
-                      size="small"
-                    />
+                    <Button href="/" label="GO HOME" variant="secondary" />
                   </div>
                 </div>
               ) : (
@@ -124,17 +112,11 @@ export default function NotFound() {
                   <div className="pointer-events-auto flex items-center gap-4">
                     <Button
                       href="#"
-                      label="START"
-                      variant="solid"
-                      size="small"
+                      label="Start"
+                      variant="primary"
                       onClick={handleStartClick}
                     />
-                    <Button
-                      href="/"
-                      label="GO HOME"
-                      variant="outline"
-                      size="small"
-                    />
+                    <Button href="/" label="Go Home" variant="secondary" />
                   </div>
                 </div>
               )}
