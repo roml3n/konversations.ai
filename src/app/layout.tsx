@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Instrument_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -8,9 +9,9 @@ const geistSans = Geist({
 });
 
 const instrumentSans = Instrument_Sans({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-instrument-sans',
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-instrument-sans",
 });
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${instrumentSans.variable} font-feature-settings-[ss02] antialiased`}
       >
+        <Navbar />
         {children}
       </body>
     </html>

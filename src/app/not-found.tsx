@@ -51,7 +51,7 @@ export default function NotFound() {
 
   return (
     <main
-      className="relative h-screen w-full overflow-hidden font-sans"
+      className="relative h-screen  w-full overflow-hidden font-sans"
       style={{
         fontFeatureSettings: '"ss02" 1',
         background:
@@ -60,7 +60,7 @@ export default function NotFound() {
     >
       <SpaceShooter404
         ref={gameRef}
-        className="absolute inset-0 m-8 mb-16"
+        className="absolute inset-0 mx-8 mt-24 mb-16"
         onGameStart={handleGameStart}
         onGameOver={handleGameOver}
         onVictory={handleVictory}
@@ -79,7 +79,7 @@ export default function NotFound() {
                 <div className="w-full flex flex-col gap-4">
                   <div className="inline-flex flex-col justify-start items-center gap-3">
                     <div className="flex flex-col justify-start items-center">
-                      <div className="text-center justify-end text-white text-3xl font-sans">
+                      <div className="text-center justify-end text-white text-3xl font-semibold font-sans">
                         Game over!
                       </div>
                       <div className="opacity-60 text-center justify-end text-white text-3xl font-sans flex items-center gap-4">
@@ -110,7 +110,7 @@ export default function NotFound() {
                 <div className="w-full flex flex-col gap-4">
                   <div className="inline-flex flex-col justify-start items-center gap-3">
                     <div className="flex flex-col justify-start items-center">
-                      <div className="text-center justify-end text-white text-3xl font-sans">
+                      <div className="text-center justify-end text-white text-3xl font-semibold font-sans">
                         Enemy fleet destroyed!
                       </div>
                       <div className="opacity-60 text-center justify-end text-white text-3xl font-sans flex items-center gap-4">
