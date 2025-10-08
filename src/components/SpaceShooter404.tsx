@@ -543,12 +543,6 @@ const SpaceShooter404 = forwardRef<
           onGameOver?.({ score, level });
           return;
         }
-        if (e.position.y + e.height >= player.position.y) {
-          setIsGameOver(true);
-          setHasStarted(false);
-          onGameOver?.({ score, level });
-          return;
-        }
       }
 
       const anyAlive = enemiesRef.current.some((e) => e.alive);
