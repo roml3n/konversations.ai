@@ -37,6 +37,15 @@ type Explosion = {
   durationMs: number;
   maxRadius: number;
 };
+type FloatingScore = {
+  id: string;
+  x: number;
+  y: number;
+  startY: number;
+  score: number;
+  ageMs: number;
+  durationMs: number;
+};
 
 export type SpaceShooter404Handle = { start: () => void; restart: () => void };
 
@@ -141,6 +150,7 @@ const SpaceShooter404 = forwardRef<
   const enemiesRef = useRef<Enemy[]>([]);
   const enemyBulletsRef = useRef<Bullet[]>([]);
   const explosionsRef = useRef<Explosion[]>([]);
+  const floatingScoresRef = useRef<FloatingScore[]>([]);
 
   const lastFrameTimeRef = useRef<number>(0);
   const playerShootCooldownRef = useRef<number>(0);
@@ -193,6 +203,7 @@ const SpaceShooter404 = forwardRef<
     enemiesRef.current = enemies;
     enemyBulletsRef.current = [];
     explosionsRef.current = [];
+    floatingScoresRef.current = [];
   }, [gridOffsetX, gridOffsetY]);
 
   const resetGame = useCallback(() => {
@@ -448,13 +459,23 @@ const SpaceShooter404 = forwardRef<
           };
           if (rectOverlap(a, r)) {
             e.alive = false;
-            setScore((s) => s + 10);
+            const scoreEarned = 10;
+            setScore((s) => s + scoreEarned);
             explosionsRef.current.push({
               x: e.position.x + e.width / 2,
               y: e.position.y + e.height / 2,
               ageMs: 0,
               durationMs: 280,
               maxRadius: 14,
+            });
+            floatingScoresRef.current.push({
+              id: randomId(),
+              x: e.position.x + e.width / 2,
+              y: e.position.y + e.height / 2,
+              startY: e.position.y + e.height / 2,
+              score: scoreEarned,
+              ageMs: 0,
+              durationMs: 800,
             });
             hit = true;
             break;
@@ -507,6 +528,19 @@ const SpaceShooter404 = forwardRef<
       explosionsRef.current = explosionsRef.current
         .map((ex) => ({ ...ex, ageMs: ex.ageMs + dtMs }))
         .filter((ex) => ex.ageMs < ex.durationMs);
+
+      floatingScoresRef.current = floatingScoresRef.current
+        .map((fs) => {
+          const newAgeMs = fs.ageMs + dtMs;
+          const t = Math.min(1, newAgeMs / fs.durationMs);
+          const moveDistance = 24;
+          return {
+            ...fs,
+            ageMs: newAgeMs,
+            y: fs.startY - moveDistance * t,
+          };
+        })
+        .filter((fs) => fs.ageMs < fs.durationMs);
     },
     [enemiesShoot, canvasWidth, canvasHeight, onGameOver, onVictory, score]
   );
@@ -582,6 +616,17 @@ const SpaceShooter404 = forwardRef<
       for (const b of enemyBulletsRef.current) {
         ctx.fillStyle = b.color;
         ctx.fillRect(b.position.x, b.position.y, b.width, b.height);
+      }
+
+      // Floating scores
+      ctx.font = "12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      for (const fs of floatingScoresRef.current) {
+        const t = Math.min(1, fs.ageMs / fs.durationMs);
+        const alpha = (1 - t) * 0.6;
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.fillText(`+${fs.score}`, fs.x, fs.y);
       }
     },
     [canvasWidth, canvasHeight]
