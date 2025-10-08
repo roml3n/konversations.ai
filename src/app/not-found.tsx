@@ -41,7 +41,11 @@ export default function NotFound() {
   return (
     <main
       className="relative h-screen w-full overflow-hidden font-sans"
-      style={{ fontFeatureSettings: '"ss02" 1' }}
+      style={{
+        fontFeatureSettings: '"ss02" 1',
+        background:
+          "radial-gradient(ellipse 450% 80% at top, #000000 3%, #0227F2 50%)",
+      }}
     >
       <SpaceShooter404
         ref={gameRef}
