@@ -167,19 +167,41 @@ export default function NotFound() {
         <div className="absolute bottom-6 w-full pointer-events-auto mt-2 flex flex-col text-white/80 items-center gap-4">
           <p className="text-lg font-normal">
             Press{" "}
-            <kbd className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
+            <kbd className="border border-b-2 border-white/40 px-1 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm font-medium font-sans text-white">
               SPACE
             </kbd>{" "}
             to shoot. Hold for more power.
           </p>
           <p className="text-lg font-normal">
             Use{" "}
-            <span className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
-              ←
+            <span className="border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
+              <svg
+                width="12"
+                height="10"
+                viewBox="0 0 12 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.7793 4.50879H11.1113V5.5166H2.77832L6.86914 9.63281H5.46875L0.890625 5.0127L5.4834 0.392578H6.88281L2.7793 4.50879Z"
+                  fill="white"
+                />
+              </svg>
             </span>{" "}
             and{" "}
-            <span className="border border-b-2 border-white/40 px-2 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
-              →
+            <span className="border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
+              <svg
+                width="12"
+                height="10"
+                viewBox="0 0 12 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.1104 5.0127L6.51855 9.63281H5.11816L9.22168 5.5166H0.890625V4.50879H9.22363L5.13281 0.392578H6.53223L11.1104 5.0127Z"
+                  fill="white"
+                />
+              </svg>
             </span>{" "}
             to move.
           </p>
