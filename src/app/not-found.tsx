@@ -23,13 +23,13 @@ export default function NotFound() {
 
   const handleRetryClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    gameRef.current?.restart(true); // Reset score when retrying after game over
+    gameRef.current?.restart(true, false); // Reset score when retrying after game over
     setGameState("playing");
   };
 
   const handleNextLevelClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    gameRef.current?.restart(false); // Keep score for next level
+    gameRef.current?.restart(false, true); // Keep score and increment level
     setGameState("playing");
   };
 

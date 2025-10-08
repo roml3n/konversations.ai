@@ -49,7 +49,7 @@ type FloatingScore = {
 
 export type SpaceShooter404Handle = {
   start: () => void;
-  restart: (resetScore?: boolean) => void;
+  restart: (resetScore?: boolean, isNextLevel?: boolean) => void;
 };
 
 export type GameEndData = {
@@ -229,17 +229,15 @@ const SpaceShooter404 = forwardRef<
     floatingScoresRef.current = [];
   }, [gridOffsetX, gridOffsetY]);
 
-  const isInitialMountRef = useRef(true);
-
   const resetGame = useCallback(
-    (resetScore = false) => {
+    (resetScore = false, isNextLevel = false) => {
       setIsGameOver(false);
       setIsVictory(false);
       if (resetScore) {
         setScore(0);
         setLevel(1);
-      } else if (!isInitialMountRef.current) {
-        // Next level - increment level, keep score (but not on initial mount)
+      } else if (isNextLevel) {
+        // Only increment level when explicitly going to next level
         setLevel((prev) => prev + 1);
       }
       initializePlayer();
@@ -250,7 +248,6 @@ const SpaceShooter404 = forwardRef<
 
   useEffect(() => {
     resetGame();
-    isInitialMountRef.current = false;
   }, [resetGame]);
 
   const shootPlayerBullet = useCallback(() => {
@@ -709,7 +706,8 @@ const SpaceShooter404 = forwardRef<
     ref,
     () => ({
       start: handleStart,
-      restart: (resetScore = false) => resetGame(resetScore),
+      restart: (resetScore = false, isNextLevel = false) =>
+        resetGame(resetScore, isNextLevel),
     }),
     [handleStart, resetGame]
   );
