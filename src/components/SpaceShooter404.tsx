@@ -52,6 +52,11 @@ export type SpaceShooter404Handle = {
   restart: (resetScore?: boolean) => void;
 };
 
+export type GameEndData = {
+  score: number;
+  level: number;
+};
+
 const GRID_COLS = (enemyShipPositions as { columns: number }).columns - 2; // A..V
 const GRID_ROWS = (enemyShipPositions as { rows: number }).rows;
 const GRID_CELL_SIZE = 24;
@@ -135,8 +140,8 @@ const SpaceShooter404 = forwardRef<
   {
     className?: string;
     onGameStart?: () => void;
-    onGameOver?: (score: number) => void;
-    onVictory?: (score: number) => void;
+    onGameOver?: (data: GameEndData) => void;
+    onVictory?: (data: GameEndData) => void;
   }
 >(function SpaceShooter404(
   { className, onGameStart, onGameOver, onVictory },
@@ -150,6 +155,7 @@ const SpaceShooter404 = forwardRef<
   const [isGameOver, setIsGameOver] = useState(false);
   const [isVictory, setIsVictory] = useState(false);
   const [score, setScore] = useState(0);
+  const [level, setLevel] = useState(1);
   const [canvasWidth, setCanvasWidth] = useState(800);
   const [canvasHeight, setCanvasHeight] = useState(600);
 
@@ -223,12 +229,18 @@ const SpaceShooter404 = forwardRef<
     floatingScoresRef.current = [];
   }, [gridOffsetX, gridOffsetY]);
 
+  const isInitialMountRef = useRef(true);
+
   const resetGame = useCallback(
     (resetScore = false) => {
       setIsGameOver(false);
       setIsVictory(false);
       if (resetScore) {
         setScore(0);
+        setLevel(1);
+      } else if (!isInitialMountRef.current) {
+        // Next level - increment level, keep score (but not on initial mount)
+        setLevel((prev) => prev + 1);
       }
       initializePlayer();
       buildEnemiesFromMask();
@@ -238,6 +250,7 @@ const SpaceShooter404 = forwardRef<
 
   useEffect(() => {
     resetGame();
+    isInitialMountRef.current = false;
   }, [resetGame]);
 
   const shootPlayerBullet = useCallback(() => {
@@ -520,7 +533,7 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.(score);
+          onGameOver?.({ score, level });
           return;
         }
       }
@@ -530,13 +543,13 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.(score);
+          onGameOver?.({ score, level });
           return;
         }
         if (e.position.y + e.height >= player.position.y) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.(score);
+          onGameOver?.({ score, level });
           return;
         }
       }
@@ -545,7 +558,7 @@ const SpaceShooter404 = forwardRef<
       if (!anyAlive) {
         setIsVictory(true);
         setHasStarted(false);
-        onVictory?.(score);
+        onVictory?.({ score, level });
       }
 
       explosionsRef.current = explosionsRef.current
@@ -565,7 +578,15 @@ const SpaceShooter404 = forwardRef<
         })
         .filter((fs) => fs.ageMs < fs.durationMs);
     },
-    [enemiesShoot, canvasWidth, canvasHeight, onGameOver, onVictory, score]
+    [
+      enemiesShoot,
+      canvasWidth,
+      canvasHeight,
+      onGameOver,
+      onVictory,
+      score,
+      level,
+    ]
   );
 
   const draw = useCallback(
@@ -695,13 +716,14 @@ const SpaceShooter404 = forwardRef<
 
   return (
     <div ref={containerRef} className={className}>
-      {/* Score */}
+      {/* Level and Score */}
       {hasStarted && (
         <div
-          className="pointer-events-none absolute left-1/2 translate-y-1/2 top-2 z-10 select-none font-sans text-base font-medium text-white/60"
+          className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-2 z-10 select-none font-sans text-base font-medium text-white/60 flex items-center gap-4"
           aria-live="polite"
         >
-          Score: {score}
+          <span>Level: {level}</span>
+          <span>Score: {score}</span>
         </div>
       )}
 

@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react";
 import SpaceShooter404, {
   SpaceShooter404Handle,
+  GameEndData,
 } from "@/components/SpaceShooter404";
 import Button from "@/components/Button";
 
@@ -12,6 +13,7 @@ export default function NotFound() {
     "initial" | "playing" | "gameOver" | "victory"
   >("initial");
   const [finalScore, setFinalScore] = useState(0);
+  const [finalLevel, setFinalLevel] = useState(1);
 
   const handleStartClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,13 +37,15 @@ export default function NotFound() {
     setGameState("playing");
   }, []);
 
-  const handleGameOver = React.useCallback((score: number) => {
-    setFinalScore(score);
+  const handleGameOver = React.useCallback((data: GameEndData) => {
+    setFinalScore(data.score);
+    setFinalLevel(data.level);
     setGameState("gameOver");
   }, []);
 
-  const handleVictory = React.useCallback((score: number) => {
-    setFinalScore(score);
+  const handleVictory = React.useCallback((data: GameEndData) => {
+    setFinalScore(data.score);
+    setFinalLevel(data.level);
     setGameState("victory");
   }, []);
 
@@ -78,8 +82,9 @@ export default function NotFound() {
                       <div className="text-center justify-end text-white text-3xl font-sans">
                         Game over!
                       </div>
-                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans">
-                        Score: {finalScore}
+                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans flex items-center gap-4">
+                        <span>Level: {finalLevel}</span>
+                        <span>Score: {finalScore}</span>
                       </div>
                     </div>
                     <div className="flex flex-col justify-start items-center gap-2">
@@ -108,8 +113,9 @@ export default function NotFound() {
                       <div className="text-center justify-end text-white text-3xl font-sans">
                         Enemy fleet destroyed!
                       </div>
-                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans">
-                        Score: {finalScore}
+                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans flex items-center gap-4">
+                        <span>Level: {finalLevel}</span>
+                        <span>Score: {finalScore}</span>
                       </div>
                     </div>
                     <div className="flex flex-col justify-start items-center gap-2">
