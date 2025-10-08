@@ -21,7 +21,13 @@ export default function NotFound() {
 
   const handleRetryClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    gameRef.current?.restart();
+    gameRef.current?.restart(true); // Reset score when retrying after game over
+    setGameState("playing");
+  };
+
+  const handleNextLevelClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    gameRef.current?.restart(false); // Keep score for next level
     setGameState("playing");
   };
 
@@ -29,7 +35,8 @@ export default function NotFound() {
     setGameState("playing");
   }, []);
 
-  const handleGameOver = React.useCallback(() => {
+  const handleGameOver = React.useCallback((score: number) => {
+    setFinalScore(score);
     setGameState("gameOver");
   }, []);
 
@@ -66,37 +73,62 @@ export default function NotFound() {
             <div className="w-full">
               {gameState === "gameOver" ? (
                 <div className="w-full flex flex-col gap-4">
-                  <h1 className="text-3xl font-semibold tracking-tight">
-                    Game Over!
-                  </h1>
+                  <div className="inline-flex flex-col justify-start items-center gap-3">
+                    <div className="flex flex-col justify-start items-center">
+                      <div className="text-center justify-end text-white text-3xl font-sans">
+                        Game over!
+                      </div>
+                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans">
+                        Score: {finalScore}
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-start items-center gap-2">
+                      <div className="inline-flex justify-center items-center gap-1">
+                        <div className="opacity-60 text-center justify-start text-white text-lg font-normal font-sans">
+                          Your ship got destroyed.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="pointer-events-auto flex items-center justify-center gap-4">
                     <Button
                       href="#"
-                      label="RETRY"
+                      label="Retry"
                       variant="primary"
                       onClick={handleRetryClick}
                     />
-                    <Button href="/" label="GO HOME" variant="secondary" />
+                    <Button href="/" label="Go Home" variant="secondary" />
                   </div>
                 </div>
               ) : gameState === "victory" ? (
                 <div className="w-full flex flex-col gap-4">
-                  <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl font-semibold tracking-tight">
-                      Enemy fleet destroyed!
-                    </h1>
-                    <p className="text-2xl text-white/90 font-mono">
-                      Score: {finalScore}
-                    </p>
+                  <div className="inline-flex flex-col justify-start items-center gap-3">
+                    <div className="flex flex-col justify-start items-center">
+                      <div className="text-center justify-end text-white text-3xl font-sans">
+                        Enemy fleet destroyed!
+                      </div>
+                      <div className="opacity-60 text-center justify-end text-white text-3xl font-sans">
+                        Score: {finalScore}
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-start items-center gap-2">
+                      <div className="inline-flex justify-center items-center gap-1">
+                        <div className="opacity-60 text-center justify-start text-white text-lg font-normal font-sans">
+                          Good work obliterating the enemy fleet.
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
                   <div className="pointer-events-auto flex items-center justify-center gap-4">
                     <Button
                       href="#"
-                      label="NEXT LEVEL"
+                      label="Next Level"
                       variant="primary"
-                      onClick={handleRetryClick}
+                      onClick={handleNextLevelClick}
                     />
-                    <Button href="/" label="GO HOME" variant="secondary" />
+                    <Button href="/" label="Go Home" variant="secondary" />
                   </div>
                 </div>
               ) : (

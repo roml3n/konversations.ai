@@ -47,13 +47,16 @@ type FloatingScore = {
   durationMs: number;
 };
 
-export type SpaceShooter404Handle = { start: () => void; restart: () => void };
+export type SpaceShooter404Handle = {
+  start: () => void;
+  restart: (resetScore?: boolean) => void;
+};
 
 const GRID_COLS = (enemyShipPositions as { columns: number }).columns - 2; // A..V
 const GRID_ROWS = (enemyShipPositions as { rows: number }).rows;
 const GRID_CELL_SIZE = 24;
 const GRID_GAP = 4;
-const PLAYER_WIDTH = 20;
+const PLAYER_WIDTH = 24;
 const PLAYER_HEIGHT = 20;
 const PLAYER_BOTTOM_MARGIN = 64;
 const PLAYER_COLOR = "#ffffff";
@@ -93,6 +96,20 @@ const drawRoundedRect = (
   ctx.closePath();
 };
 
+const drawTriangle = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+) => {
+  ctx.beginPath();
+  ctx.moveTo(x + w / 2, y); // Top point (center)
+  ctx.lineTo(x + w, y + h); // Bottom right
+  ctx.lineTo(x, y + h); // Bottom left
+  ctx.closePath();
+};
+
 const FOUR_ZERO_FOUR_MASK: boolean[][] = (() => {
   const rows = GRID_ROWS;
   const cols = GRID_COLS;
@@ -118,7 +135,7 @@ const SpaceShooter404 = forwardRef<
   {
     className?: string;
     onGameStart?: () => void;
-    onGameOver?: () => void;
+    onGameOver?: (score: number) => void;
     onVictory?: (score: number) => void;
   }
 >(function SpaceShooter404(
@@ -206,12 +223,18 @@ const SpaceShooter404 = forwardRef<
     floatingScoresRef.current = [];
   }, [gridOffsetX, gridOffsetY]);
 
-  const resetGame = useCallback(() => {
-    setIsGameOver(false);
-    setIsVictory(false);
-    initializePlayer();
-    buildEnemiesFromMask();
-  }, [buildEnemiesFromMask, initializePlayer]);
+  const resetGame = useCallback(
+    (resetScore = false) => {
+      setIsGameOver(false);
+      setIsVictory(false);
+      if (resetScore) {
+        setScore(0);
+      }
+      initializePlayer();
+      buildEnemiesFromMask();
+    },
+    [buildEnemiesFromMask, initializePlayer]
+  );
 
   useEffect(() => {
     resetGame();
@@ -497,7 +520,7 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.();
+          onGameOver?.(score);
           return;
         }
       }
@@ -507,13 +530,13 @@ const SpaceShooter404 = forwardRef<
         if (rectOverlap(playerRect, r)) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.();
+          onGameOver?.(score);
           return;
         }
         if (e.position.y + e.height >= player.position.y) {
           setIsGameOver(true);
           setHasStarted(false);
-          onGameOver?.();
+          onGameOver?.(score);
           return;
         }
       }
@@ -554,17 +577,16 @@ const SpaceShooter404 = forwardRef<
       if (player) {
         const strokeWidth = 1;
         const inset = strokeWidth;
-        const maxSquish = 8;
-        const squishY = maxSquish * chargeProgressRef.current;
+        const maxSquish = 10;
+        const squishY = maxSquish * Math.pow(chargeProgressRef.current, 0.7);
         const drawH = Math.max(8, PLAYER_HEIGHT - squishY);
         const offsetY = (PLAYER_HEIGHT - drawH) / 2;
-        drawRoundedRect(
+        drawTriangle(
           ctx,
           player.position.x + inset,
           player.position.y + inset + offsetY,
           PLAYER_WIDTH - inset * 2,
-          drawH - inset * 2,
-          2
+          drawH - inset * 2
         );
         ctx.fillStyle = "rgba(255,255,255,0.20)";
         ctx.fill();
@@ -662,10 +684,14 @@ const SpaceShooter404 = forwardRef<
     onGameStart?.();
   }, [isGameOver, isVictory, resetGame, onGameStart]);
 
-  useImperativeHandle(ref, () => ({ start: handleStart, restart: resetGame }), [
-    handleStart,
-    resetGame,
-  ]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      start: handleStart,
+      restart: (resetScore = false) => resetGame(resetScore),
+    }),
+    [handleStart, resetGame]
+  );
 
   return (
     <div ref={containerRef} className={className}>
