@@ -143,7 +143,7 @@ export default function NotFound() {
                     <h1 className="text-3xl font-semibold tracking-tight">
                       Uh-oh! Page not found.
                     </h1>
-                    <p className="text-lg text-white/80">
+                    <p className="opacity-60 text-center justify-start text-white text-lg font-normal font-sans">
                       Defeat the enemies to get back home.
                     </p>
                   </div>
