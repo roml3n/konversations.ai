@@ -625,12 +625,14 @@ const SpaceShooter404 = forwardRef<
   return (
     <div ref={containerRef} className={className}>
       {/* Score */}
-      <div
-        className="pointer-events-none absolute right-2 top-2 z-10 select-none text-xs text-white/80"
-        aria-live="polite"
-      >
-        Score: {score}
-      </div>
+      {hasStarted && (
+        <div
+          className="pointer-events-none absolute left-1/2 translate-y-1/2 top-2 z-10 select-none font-sans text-base font-medium text-white/60"
+          aria-live="polite"
+        >
+          Score: {score}
+        </div>
+      )}
 
       {/* Fleet grid overlay at top before game start */}
       {!hasStarted && (
@@ -658,7 +660,7 @@ const SpaceShooter404 = forwardRef<
                     key={`${r}-${c}`}
                     className={
                       isActive
-                        ? "bg-white/0 rounded-smborder-none"
+                        ? "bg-white/0 rounded-sm border-none"
                         : "opacity-20 rounded-sm border border-white"
                     }
                     aria-hidden="true"
