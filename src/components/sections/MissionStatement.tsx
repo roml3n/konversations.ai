@@ -6,17 +6,17 @@ import Image from "next/image";
 const MissionStatement = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   return (
-    <section className="bg-white snap-start">
+    <section className="flex items-center container bg-white snap-start">
       <div
         ref={containerRef}
-        className="container h-[120vh] mx-auto gap-5 px-4 md:mx-24 flex items-center justify-center flex-col"
+        className=" h-[120vh] w-full mx-auto gap-5 px-4 md:mx-24 flex items-center justify-center flex-col"
       >
         <div
           id="reveal-container"
           className="sticky top-1/2 -translate-y-1/2 mx-auto flex flex-col items-center justify-center gap-5"
         >
           <div
-            className="w-16 md:w-21.5 lg:w-27 aspect-square object-cover   bg-[#030712] rounded-2xl p-6"
+            className="w-16 md:w-21.5 lg:w-27 aspect-square object-cover   bg-[#030712] rounded-2xl p-3.5 md:p-4.5 lg:p-6"
             aria-hidden="true"
           >
             {" "}

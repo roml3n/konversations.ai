@@ -160,9 +160,9 @@ const WhyKonversationsSection = () => {
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <section className="py-16 md:py-24 bg-white">
-      <div className="container mx-auto px-4 md:px-16">
-        <div className="max-w-[1151px] mx-auto bg-zinc-100 rounded-3xl border border-black/10 flex flex-col lg:flex-row overflow-hidden">
+    <section className="w-full py-16 md:py-24 bg-white">
+      <main className="container mx-auto px-4 md:px-16">
+        <div className="w-full mx-auto bg-zinc-100 rounded-3xl border border-black/10 flex flex-col lg:flex-row overflow-hidden">
           {/* Left: Heading and Tabs */}
           <div className="flex-1 flex flex-col justify-between gap-8 px-4 py-9 md:p-6 lg:px-9 lg:py-6">
             <div className="flex flex-col gap-4">
@@ -343,7 +343,7 @@ const WhyKonversationsSection = () => {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </section>
   );
 };

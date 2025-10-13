@@ -1,18 +1,83 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
 
+const useScrolled = () => {
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    let ticking = false;
+
+    const update = () => {
+      setIsScrolled(window.scrollY > 0);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return isScrolled;
+};
+
 const Navbar = () => {
+  const isScrolled = useScrolled();
+
+  const containerClasses = [
+    "container mx-auto z-50 flex items-center justify-between fixed top-0",
+    "transition-all duration-300 ease-out",
+    isScrolled
+      ? "translate-y-3 bg-white/60 backdrop-blur rounded-full pl-4 pr-2 py-2 text-neutral-900 border-[1.4px] border-black/10 w-2/3"
+      : "px-16 py-4 text-white",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <main className="fixed container top-0 z-50 flex py-4 px-16 mx-auto justify-between items-center">
+    <nav className={containerClasses} aria-label="Primary" role="navigation">
       <Image src="/logo/color-logo.svg" alt="logo" width={150} height={18} />
-      <div className="flex items-center gap-4">
-        <Link href="#">Product</Link>
-        <Link href="#">Features</Link>
+      <div className="flex items-center gap-12 font-sans font-medium tracking-tight leading-none">
+        <Link
+          href="#"
+          className="outline-none focus:underline"
+          tabIndex={0}
+          aria-label="Product"
+        >
+          Product
+        </Link>
+        <Link
+          href="#"
+          className="outline-none focus:underline"
+          tabIndex={0}
+          aria-label="Features"
+        >
+          Features
+        </Link>
       </div>
-      <Button href="#" label="Schedule a demo" variant="secondary" />
-    </main>
+      <Button
+        href="#"
+        label="Schedule a demo"
+        variant="secondary"
+        className={[
+          isScrolled
+            ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
+            : "!px-3 !py-2 !font-normal",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      />
+    </nav>
   );
 };
 

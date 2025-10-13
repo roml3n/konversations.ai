@@ -3,7 +3,7 @@ import { Marquee } from "../ui/marquee";
 
 const TrustedBySection = () => {
   return (
-    <section className="py-16 md:py-24 bg-white flex flex-col gap-10 md:gap-12 lg:gap-15">
+    <section className="container py-16 md:py-24 bg-white flex flex-col gap-10 md:gap-12 lg:gap-15 overflow-clip">
       <div className="container mx-auto px-4 md:px-16">
         <div className="flex flex-col items-center gap-6">
           <h2 className="text-xl md:text-2xl lg:text-[1.75rem] font-gotham font-medium text-neutral-900 text-center">
@@ -18,6 +18,7 @@ const TrustedBySection = () => {
         </div>
       </div>
 
+      {/* Quote */}
       <div className="container mx-auto px-4 md:px-16 mt-16">
         <div className="flex flex-col items-center gap-8">
           <blockquote className="text-xl md:text-2xl lg:text-[1.75rem] font-gotham font-medium text-neutral-900 text-center tracking-tighter">
