@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { TextReveal } from "@/components/ui/text-reveal";
+import Image from "next/image";
 
 const MissionStatement = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -15,9 +16,17 @@ const MissionStatement = () => {
           className="sticky top-1/2 -translate-y-1/2 mx-auto flex flex-col items-center justify-center gap-5"
         >
           <div
-            className="w-16 h-16 md:w-21.5 md:h-21.5 lg:w-27 lg:h-27 bg-neutral-400 rounded-2xl"
+            className="w-16 md:w-21.5 lg:w-27 aspect-square object-cover   bg-[#030712] rounded-2xl p-6"
             aria-hidden="true"
-          />
+          >
+            {" "}
+            <Image
+              src="/logo/logomark-color.svg"
+              height={100}
+              width={100}
+              alt="konversations logo icon"
+            />{" "}
+          </div>
 
           <TextReveal
             progressTargetRef={containerRef}
