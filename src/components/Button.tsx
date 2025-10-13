@@ -22,9 +22,9 @@ export default function Button({
 }: ButtonProps) {
   const variantClasses: Record<ButtonVariant, string> = {
     primary:
-      "bg-white inline-flex justify-center items-center outline outline-1 outline-offset-[-1px] rounded-full text-base font-semibold text-[#0227F2] outline-white px-3 py-2",
+      "bg-white inline-flex justify-center items-center outline outline-1 outline-offset-[-1px] rounded-full text-base font-semibold text-[#0227F2] outline-white px-3 py-2 -md:px-4 md:py-3 lg:px-7 lg:py-4 -md:text-base lg:text-lg",
     secondary:
-      "outline-whiteinline-flex justify-center items-center outline outline-1 outline-offset-[-1px] rounded-full text-base font-semibold  text-white outline-offset-[-1px] px-3 py-2",
+      "outline-whiteinline-flex justify-center items-center outline outline-1 outline-offset-[-1px] rounded-full text-base font-semibold  text-white outline-offset-[-1px] px-3 py-2 -md:px-4 md:py-3 lg:px-7 lg:py-4 -md:text-base lg:text-lg ",
   };
 
   return (
@@ -33,7 +33,7 @@ export default function Button({
       onClick={onClick}
       className={[
         variantClasses[variant],
-        "justify-start text-base font-medium",
+        "justify-start font-sans font-medium",
         className,
       ]
         .filter(Boolean)
