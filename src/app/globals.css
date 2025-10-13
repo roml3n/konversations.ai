@@ -106,10 +106,10 @@ body {
 }
 
 /* Debug */
-main,
+/* main,
 div {
   border: 1px solid red !important;
-}
+} */
 
 section {
   border: 1px solid blue !important;

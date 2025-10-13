@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 
 type WhyItem = {
   id: string;
@@ -62,17 +63,13 @@ const WhyKonversationsSection = () => {
 
     // Change the source
     el.currentTime = 0;
-    // Autoplay only if we have a real source and playing is intended
-    if (isPlaying && items[activeIndex]?.src) {
-      el.play().catch(() => {});
-    } else {
-      el.pause();
-    }
+    // Pause while we swap sources; separate effect will start playback if needed
+    el.pause();
     // trigger crossfade
     setFadeStage(0);
     const id = requestAnimationFrame(() => setFadeStage(1));
     return () => cancelAnimationFrame(id);
-  }, [activeIndex, isPlaying, items]);
+  }, [activeIndex, items]);
 
   useEffect(() => {
     const el = videoRef.current;
@@ -158,7 +155,7 @@ const WhyKonversationsSection = () => {
     setIsPlaying((p) => !p);
   }, []);
 
-  const radius = 16;
+  const radius = 24; // increased for more breathing room around the 24px icon
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - progress);
 
@@ -169,10 +166,10 @@ const WhyKonversationsSection = () => {
           {/* Left: Heading and Tabs */}
           <div className="flex-1 flex flex-col justify-between gap-8">
             <div className="flex flex-col gap-4">
-              <h2 className="text-3xl md:text-5xl font-bold text-zinc-800">
+              <h2 className="text-[1.75rem] md:text-4xl lg:text-5xl font-medium font-gotham leading-none tracking-tighter text-zinc-800">
                 Why Konversations?
               </h2>
-              <p className="text-base md:text-lg text-zinc-800/60 font-[family-name:var(--font-instrument-sans)]">
+              <p className="text-base md:text-lg text-zinc-800/60 font-sans">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut et
                 massa mi. Aliquam in hendrerit urna. Pellentesque sit amet
                 sapien fringilla, mattis ligula consectetur, ultrices .
@@ -204,13 +201,13 @@ const WhyKonversationsSection = () => {
                         className="w-11 h-10 bg-neutral-400 rounded-lg flex-shrink-0"
                         aria-hidden="true"
                       />
-                      <span className="flex-1 flex flex-col gap-2">
-                        <span className="text-lg font-bold text-zinc-800">
+                      <span className="py-3 flex-1 flex flex-col gap-1 justify-center">
+                        <span className="text-lg font-medium font-gotham tracking-tighter leading-none text-zinc-800">
                           {item.title}
                         </span>
                         <span
                           className={
-                            "text-base text-zinc-800/60 font-[family-name:var(--font-instrument-sans)] transition-all duration-300 overflow-hidden " +
+                            "text-base text-zinc-800/60 font-sans  transition-all duration-300 overflow-hidden " +
                             (isActive
                               ? "opacity-100 max-h-20 translate-y-0"
                               : "opacity-0 max-h-0 -translate-y-1")
@@ -220,14 +217,16 @@ const WhyKonversationsSection = () => {
                         </span>
                       </span>
                     </button>
-                    <div className={"h-px bg-zinc-300 relative"}>
-                      {isActive ? (
+                    {isActive ? (
+                      <div className="h-px bg-zinc-200 relative rounded-full overflow-hidden w-full">
                         <div
-                          className="h-px bg-blue-700 absolute top-0 left-0 transition-[width] duration-500 ease-linear"
-                          style={{ width: `${Math.min(progress * 100, 100)}%` }}
+                          className="h-px bg-blue-700 absolute inset-y-0 left-0 right-0 origin-left transition-transform duration-200 ease-linear"
+                          style={{
+                            transform: `scaleX(${Math.min(progress, 1)})`,
+                          }}
                         />
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
                 );
               })}
@@ -299,11 +298,11 @@ const WhyKonversationsSection = () => {
                 onClick={handleTogglePlay}
                 aria-pressed={!isPlaying}
                 aria-label={isPlaying ? "Pause video" : "Play video"}
-                className="relative w-14 h-14 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm text-zinc-800 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
+                className="relative w-14 h-14 p-2 rounded-full flex items-center justify-center text-zinc-800 disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-700"
               >
                 {/* Progress ring */}
                 <svg
-                  className="absolute inset-0"
+                  className="absolute inset-0 pointer-events-none"
                   width="56"
                   height="56"
                   viewBox="0 0 56 56"
@@ -313,16 +312,16 @@ const WhyKonversationsSection = () => {
                     cx="28"
                     cy="28"
                     r={radius}
-                    stroke="#e5e7eb"
-                    strokeWidth="3"
+                    stroke="#d1d5db"
+                    strokeWidth="2"
                     fill="none"
                   />
                   <circle
                     cx="28"
                     cy="28"
                     r={radius}
-                    stroke="#1d4ed8"
-                    strokeWidth="3"
+                    stroke="#9ca3af"
+                    strokeWidth="2"
                     fill="none"
                     strokeDasharray={circumference}
                     strokeDashoffset={dashOffset}
@@ -332,42 +331,14 @@ const WhyKonversationsSection = () => {
                 </svg>
 
                 {/* Icon */}
-                {isPlaying ? (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
-                    className="text-zinc-800"
-                  >
-                    <rect
-                      x="3"
-                      y="3"
-                      width="4"
-                      height="10"
-                      rx="1"
-                      fill="currentColor"
-                    />
-                    <rect
-                      x="9"
-                      y="3"
-                      width="4"
-                      height="10"
-                      rx="1"
-                      fill="currentColor"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
-                    className="text-zinc-800"
-                  >
-                    <polygon points="4,3 13,8 4,13" fill="currentColor" />
-                  </svg>
-                )}
+                <Image
+                  src={isPlaying ? "/icons/pause.svg" : "/icons/play.svg"}
+                  alt={isPlaying ? "Pause" : "Play"}
+                  width={24}
+                  height={24}
+                  draggable={false}
+                  className="select-none block relative z-10"
+                />
               </button>
             </div>
           </div>
