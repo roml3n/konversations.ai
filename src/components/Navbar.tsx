@@ -71,7 +71,7 @@ const Navbar = () => {
         variant="secondary"
         className={[
           isScrolled
-            ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5]"
+            ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
             : "!px-3 !py-2 !font-normal",
         ]
           .filter(Boolean)
