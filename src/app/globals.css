@@ -106,7 +106,7 @@ body {
 }
 
 /* Debug */
-main,
+/* main,
 div {
   border: 1px solid red !important;
 }
@@ -123,7 +123,7 @@ h5,
 h6,
 p {
   border: 1px solid yellow !important;
-}
+} */
 
 /* Apply ss02 (single-story a) to all font elements */
 .font-sans,

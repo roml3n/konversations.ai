@@ -38,7 +38,7 @@ const Navbar = () => {
     "container mx-auto z-50 flex items-center justify-between fixed top-0",
     "transition-all duration-300 ease-out",
     isScrolled
-      ? "translate-y-3 bg-white/60 backdrop-blur rounded-full pl-4 pr-2 py-2 text-neutral-900 border-[1.4px] border-black/10 w-2/3"
+      ? "translate-y-3 bg-white/60 backdrop-blur rounded-full pl-4 pr-2 py-2 text-neutral-900 border-[1.4px] border-black/10 w-4/5"
       : "px-16 py-4 text-white",
   ]
     .filter(Boolean)
@@ -71,7 +71,7 @@ const Navbar = () => {
         variant="secondary"
         className={[
           isScrolled
-            ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
+            ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5]"
             : "!px-3 !py-2 !font-normal",
         ]
           .filter(Boolean)
