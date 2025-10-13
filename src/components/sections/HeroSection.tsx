@@ -45,8 +45,8 @@ const HeroSection = () => {
           className="w-full h-auto] object-cover bg-gradient-to-b from-transparent via-transparent to-white rounded-[1%]"
           src="/images/hero-img.png"
           alt="Dashboard preview"
-          width={1146}
-          height={700}
+          width={3840}
+          height={1080}
         />
       </div>
     </section>
