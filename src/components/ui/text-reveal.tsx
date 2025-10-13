@@ -18,6 +18,7 @@ export const TextReveal: FC<TextRevealProps> = ({
   const targetRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: progressTargetRef ?? targetRef,
+    offset: ["start 40%", "end 50%"],
   });
 
   if (typeof children !== "string") {
@@ -29,10 +30,7 @@ export const TextReveal: FC<TextRevealProps> = ({
   return (
     <div ref={targetRef} className={cn("relative z-0", className)}>
       <div className={"mx-auto flex max-w-4xl items-center bg-transparent"}>
-        <span
-          ref={targetRef}
-          className={"flex flex-wrap text-black/20 dark:text-white/20"}
-        >
+        <span className={"flex flex-wrap text-black/20 dark:text-white/20"}>
           {words.map((word, i) => {
             const start = i / words.length;
             const end = start + 1 / words.length;
