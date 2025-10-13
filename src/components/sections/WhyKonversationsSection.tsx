@@ -162,9 +162,9 @@ const WhyKonversationsSection = () => {
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 md:px-16">
-        <div className="max-w-[1151px] mx-auto p-6 md:p-9 bg-zinc-100 rounded-3xl border border-black/10 flex flex-col lg:flex-row gap-9 overflow-hidden">
+        <div className="max-w-[1151px] mx-auto bg-zinc-100 rounded-3xl border border-black/10 flex flex-col lg:flex-row overflow-hidden">
           {/* Left: Heading and Tabs */}
-          <div className="flex-1 flex flex-col justify-between gap-8">
+          <div className="flex-1 flex flex-col justify-between gap-8 px-4 py-9 md:p-6 lg:px-9 lg:py-6">
             <div className="flex flex-col gap-4">
               <h2 className="text-[1.75rem] md:text-4xl lg:text-5xl font-medium font-gotham leading-none tracking-tighter text-zinc-800">
                 Why Konversations?
@@ -234,7 +234,7 @@ const WhyKonversationsSection = () => {
           </div>
 
           {/* Right: Video with overlay controls */}
-          <div className="w-full lg:w-[648px] h-[400px] lg:h-[738px] relative rounded-tl-2xl overflow-hidden">
+          <div className="w-full lg:w-[648px] h-[400px] lg:h-[738px] relative rounded-l-2xl md:rounded-tl-2xl ml-4 mr-0 my-4 md:ml-6 lg:mt-6 overflow-hidden">
             {/* Placeholder background */}
             <div
               className="absolute inset-0 bg-neutral-300"
