@@ -50,6 +50,12 @@ type FloatingScore = {
 export type SpaceShooter404Handle = {
   start: () => void;
   restart: (resetScore?: boolean, isNextLevel?: boolean) => void;
+  pressLeft: () => void;
+  releaseLeft: () => void;
+  pressRight: () => void;
+  releaseRight: () => void;
+  pressShoot: () => void;
+  releaseShoot: () => void;
 };
 
 export type GameEndData = {
@@ -59,7 +65,7 @@ export type GameEndData = {
 
 const GRID_COLS = (enemyShipPositions as { columns: number }).columns - 2; // A..V
 const GRID_ROWS = (enemyShipPositions as { rows: number }).rows;
-const GRID_CELL_SIZE = 24;
+const GRID_CELL_SIZE = 28;
 const GRID_GAP = 4;
 const PLAYER_WIDTH = 24;
 const PLAYER_HEIGHT = 20;
@@ -178,8 +184,22 @@ const SpaceShooter404 = forwardRef<
   const lastFrameTimeRef = useRef<number>(0);
   const playerShootCooldownRef = useRef<number>(0);
 
+  // Determine effective columns (trim one empty column on each side for mobile)
+  const isMobile = canvasWidth < 645;
+  const leftTrim = isMobile ? 1 : 0;
+  const rightTrim = isMobile ? 1 : 0;
+  const effectiveCols = Math.max(1, GRID_COLS - leftTrim - rightTrim);
+
+  // Responsive cell size: full-width on mobile, original scale (<=1x) on tablet/desktop
+  const baseGridPixelWidth =
+    effectiveCols * GRID_CELL_SIZE + (effectiveCols - 1) * GRID_GAP;
+  const scaleBase = Math.max(0, canvasWidth) / baseGridPixelWidth;
+  const desktopCap = 0.94; // slightly smaller on desktop/tablet so it doesn't touch text
+  const scale = isMobile ? scaleBase : Math.min(desktopCap, scaleBase);
+  const cellSize = Math.max(10, Math.floor(GRID_CELL_SIZE * scale));
+  const cellGap = Math.max(1, Math.floor(GRID_GAP * scale));
   const gridPixelWidth =
-    GRID_COLS * GRID_CELL_SIZE + (GRID_COLS - 1) * GRID_GAP;
+    effectiveCols * cellSize + (effectiveCols - 1) * cellGap;
   const gridOffsetX = (canvasWidth - gridPixelWidth) / 2;
   const gridOffsetY = 60;
 
@@ -204,10 +224,11 @@ const SpaceShooter404 = forwardRef<
     const enemies: Enemy[] = [];
     const speedScale = 1;
     for (let row = 0; row < GRID_ROWS; row++) {
-      for (let col = 0; col < GRID_COLS; col++) {
-        if (!FOUR_ZERO_FOUR_MASK[row]?.[col]) continue;
-        const x = gridOffsetX + col * (GRID_CELL_SIZE + GRID_GAP);
-        const y = gridOffsetY + row * (GRID_CELL_SIZE + GRID_GAP);
+      for (let col = 0; col < effectiveCols; col++) {
+        const srcCol = col + leftTrim;
+        if (!FOUR_ZERO_FOUR_MASK[row]?.[srcCol]) continue;
+        const x = gridOffsetX + col * (cellSize + cellGap);
+        const y = gridOffsetY + row * (cellSize + cellGap);
         enemies.push({
           id: randomId(),
           position: { x, y },
@@ -215,8 +236,8 @@ const SpaceShooter404 = forwardRef<
             x: (Math.random() > 0.5 ? 1 : -1) * speedScale * 0.7,
             y: speedScale * 0.2,
           },
-          width: GRID_CELL_SIZE,
-          height: GRID_CELL_SIZE,
+          width: cellSize,
+          height: cellSize,
           alive: true,
           shootCooldownMs: 1500 + Math.random() * 1500,
           color: ENEMY_COLOR,
@@ -227,7 +248,7 @@ const SpaceShooter404 = forwardRef<
     enemyBulletsRef.current = [];
     explosionsRef.current = [];
     floatingScoresRef.current = [];
-  }, [gridOffsetX, gridOffsetY]);
+  }, [gridOffsetX, gridOffsetY, cellSize, cellGap, effectiveCols, leftTrim]);
 
   const resetGame = useCallback(
     (resetScore = false, isNextLevel = false) => {
@@ -416,8 +437,12 @@ const SpaceShooter404 = forwardRef<
       const player = playerRef.current;
       if (!player) return;
 
-      if (inputRef.current.left) player.position.x -= 4.5;
-      if (inputRef.current.right) player.position.x += 4.5;
+      const dtFactor = Math.max(0.5, Math.min(2, dtMs / 16.67));
+      const playerSpeedPerFrame = 4.5;
+      if (inputRef.current.left)
+        player.position.x -= playerSpeedPerFrame * dtFactor;
+      if (inputRef.current.right)
+        player.position.x += playerSpeedPerFrame * dtFactor;
       player.position.x = clamp(
         player.position.x,
         8,
@@ -438,8 +463,8 @@ const SpaceShooter404 = forwardRef<
         .map((b) => ({
           ...b,
           position: {
-            x: b.position.x + (b.velocityX ?? 0),
-            y: b.position.y + b.velocityY,
+            x: b.position.x + (b.velocityX ?? 0) * dtFactor,
+            y: b.position.y + b.velocityY * dtFactor,
           },
         }))
         .filter((b) => b.position.y + b.height >= 0);
@@ -448,8 +473,8 @@ const SpaceShooter404 = forwardRef<
         .map((b) => ({
           ...b,
           position: {
-            x: b.position.x + (b.velocityX ?? 0),
-            y: b.position.y + b.velocityY,
+            x: b.position.x + (b.velocityX ?? 0) * dtFactor,
+            y: b.position.y + b.velocityY * dtFactor,
           },
         }))
         .filter((b) => b.position.y <= canvasHeight + 16);
@@ -458,7 +483,7 @@ const SpaceShooter404 = forwardRef<
         if (!enemy.alive) continue;
         enemy.velocity.x += (Math.random() - 0.5) * 0.15;
         enemy.velocity.x = clamp(enemy.velocity.x, -2, 2);
-        enemy.position.x += enemy.velocity.x;
+        enemy.position.x += enemy.velocity.x * dtFactor;
         if (
           enemy.position.x <= 8 ||
           enemy.position.x + enemy.width >= canvasWidth - 8
@@ -467,7 +492,11 @@ const SpaceShooter404 = forwardRef<
           enemy.position.y += 8;
         }
         if (Math.random() < 0.01) enemy.velocity.x *= -1;
-        enemy.position.y += enemy.velocity.y * 0.03;
+        // Normalize drop speed across devices
+        const dropBase = enemy.velocity.y * 0.03;
+        // Adjust for canvas height so small screens don't feel too fast
+        const heightScale = Math.max(0.75, Math.min(1.25, canvasHeight / 800));
+        enemy.position.y += dropBase * dtFactor * heightScale;
       }
 
       enemiesShoot(dtMs);
@@ -610,7 +639,7 @@ const SpaceShooter404 = forwardRef<
       // Enemies
       for (const enemy of enemiesRef.current) {
         if (!enemy.alive) continue;
-        const strokeWidth = 1;
+        const strokeWidth = 0.5;
         const inset = strokeWidth;
         drawRoundedRect(
           ctx,
@@ -618,7 +647,7 @@ const SpaceShooter404 = forwardRef<
           enemy.position.y + inset,
           enemy.width - inset * 2,
           enemy.height - inset * 2,
-          2
+          1
         );
         ctx.fillStyle = "rgba(255,255,255,0.20)";
         ctx.fill();
@@ -702,8 +731,62 @@ const SpaceShooter404 = forwardRef<
       start: handleStart,
       restart: (resetScore = false, isNextLevel = false) =>
         resetGame(resetScore, isNextLevel),
+      pressLeft: () => {
+        if (isVictory) return;
+        inputRef.current.left = true;
+      },
+      releaseLeft: () => {
+        inputRef.current.left = false;
+      },
+      pressRight: () => {
+        if (isVictory) return;
+        inputRef.current.right = true;
+      },
+      releaseRight: () => {
+        inputRef.current.right = false;
+      },
+      pressShoot: () => {
+        if (isVictory) return;
+        if (!isChargingRef.current) {
+          isChargingRef.current = true;
+          chargeStartTsRef.current = performance.now();
+        }
+        inputRef.current.shootHeld = true;
+        if (!hasStarted && !isGameOver) {
+          setHasStarted(true);
+          onGameStart?.();
+        }
+      },
+      releaseShoot: () => {
+        inputRef.current.shootHeld = false;
+        if (isChargingRef.current) {
+          const heldMs = performance.now() - chargeStartTsRef.current;
+          const clamped = Math.min(3000, Math.max(0, heldMs));
+          const TAP_THRESHOLD_MS = 150;
+          if (clamped < TAP_THRESHOLD_MS) {
+            shootPlayerBullet();
+          } else {
+            const shots = Math.max(
+              3,
+              Math.min(10, Math.round((clamped / 3000) * 10))
+            );
+            shootBurst(shots);
+          }
+          isChargingRef.current = false;
+          chargeProgressRef.current = 0;
+        }
+      },
     }),
-    [handleStart, resetGame]
+    [
+      handleStart,
+      resetGame,
+      isVictory,
+      hasStarted,
+      isGameOver,
+      onGameStart,
+      shootPlayerBullet,
+      shootBurst,
+    ]
   );
 
   return (
@@ -725,28 +808,27 @@ const SpaceShooter404 = forwardRef<
           <div
             style={{
               width: `${
-                GRID_COLS * GRID_CELL_SIZE + (GRID_COLS - 1) * GRID_GAP
+                effectiveCols * cellSize + (effectiveCols - 1) * cellGap
               }px`,
-              height: `${
-                GRID_ROWS * GRID_CELL_SIZE + (GRID_ROWS - 1) * GRID_GAP
-              }px`,
+              height: `${GRID_ROWS * cellSize + (GRID_ROWS - 1) * cellGap}px`,
               display: "grid",
-              gridTemplateColumns: `repeat(${GRID_COLS}, ${GRID_CELL_SIZE}px)`,
-              gridTemplateRows: `repeat(${GRID_ROWS}, ${GRID_CELL_SIZE}px)`,
-              gap: `${GRID_GAP}px`,
+              gridTemplateColumns: `repeat(${effectiveCols}, ${cellSize}px)`,
+              gridTemplateRows: `repeat(${GRID_ROWS}, ${cellSize}px)`,
+              gap: `${cellGap}px`,
             }}
             aria-hidden="true"
           >
             {Array.from({ length: GRID_ROWS }).map((_, r) =>
-              Array.from({ length: GRID_COLS }).map((__, c) => {
-                const isActive = FOUR_ZERO_FOUR_MASK[r]?.[c] ?? false;
+              Array.from({ length: effectiveCols }).map((__, c) => {
+                const isActive =
+                  FOUR_ZERO_FOUR_MASK[r]?.[c + leftTrim] ?? false;
                 return (
                   <div
                     key={`${r}-${c}`}
                     className={
                       isActive
                         ? "bg-white/0 rounded-sm border-none"
-                        : "opacity-20 rounded-sm border border-white"
+                        : "opacity-20 border border-white"
                     }
                     aria-hidden="true"
                   />
