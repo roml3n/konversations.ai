@@ -139,7 +139,7 @@ export default function NotFound() {
               ) : (
                 <div className="flex flex-col items-center gap-6">
                   <div className="flex flex-col items-center gap-3">
-                    <h1 className="text-3xl font-semibold tracking-tight">
+                    <h1 className="text-3xl font-semibold tracking-tight text-white">
                       Uh-oh! Page not found.
                     </h1>
                     <p className="opacity-60 text-center justify-start text-white text-lg font-normal font-sans">

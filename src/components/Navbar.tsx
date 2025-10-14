@@ -38,7 +38,7 @@ const Navbar = () => {
     "container mx-auto z-50 flex items-center justify-between fixed top-0",
     "transition-all duration-300 ease-out",
     isScrolled
-      ? "translate-y-3 bg-white/60 backdrop-blur rounded-full pl-4 pr-2 py-2 text-neutral-900 border-[1.4px] border-black/10 w-4/5"
+      ? "translate-y-3 bg-white/70 backdrop-blur-xl rounded-full pl-4 pr-2 py-2 text-neutral-900 border-[1.4px] border-black/10 w-4/5"
       : "px-16 py-4 text-white",
   ]
     .filter(Boolean)
@@ -47,10 +47,14 @@ const Navbar = () => {
   return (
     <nav className={containerClasses} aria-label="Primary" role="navigation">
       <Image src="/logo/color-logo.svg" alt="logo" width={150} height={18} />
-      <div className="flex items-center gap-12 font-sans font-medium tracking-tight leading-none">
+      <div className="flex items-center gap-6 font-sans font-medium tracking-tight leading-none">
         <Link
           href="#"
-          className="outline-none focus:underline"
+          className={
+            isScrolled
+              ? "outline-none focus:underline rounded-full px-4 py-2 hover:bg-black/10"
+              : "rounded-full px-4 py-2 hover:bg-white/10"
+          }
           tabIndex={0}
           aria-label="Product"
         >
@@ -58,7 +62,11 @@ const Navbar = () => {
         </Link>
         <Link
           href="#"
-          className="outline-none focus:underline"
+          className={
+            isScrolled
+              ? "outline-none focus:underline rounded-full px-4 py-2 hover:bg-black/10"
+              : "rounded-full px-4 py-2 hover:bg-white/10"
+          }
           tabIndex={0}
           aria-label="Features"
         >
