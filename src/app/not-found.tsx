@@ -6,6 +6,7 @@ import SpaceShooter404, {
   GameEndData,
 } from "@/components/SpaceShooter404";
 import Button from "@/components/Button";
+import Image from "next/image";
 
 export default function NotFound() {
   const gameRef = useRef<SpaceShooter404Handle | null>(null);
@@ -59,7 +60,7 @@ export default function NotFound() {
     >
       <SpaceShooter404
         ref={gameRef}
-        className="absolute inset-0 mx-8 mt-24 mb-16"
+        className="absolute inset-0 mx-4 md:mx-8 mt-24 mb-28 md:mb-16"
         onGameStart={handleGameStart}
         onGameOver={handleGameOver}
         onVictory={handleVictory}
@@ -162,48 +163,145 @@ export default function NotFound() {
         </>
       )}
 
-      {(gameState === "initial" || gameState === "playing") && (
+      {gameState === "initial" && (
         <div className="absolute bottom-6 w-full pointer-events-auto mt-2 flex flex-col text-white/80 items-center gap-4">
-          <p className="text-lg font-normal">
+          <p className="hidden md:block text-lg font-normal">
             Press{" "}
-            <kbd className="border border-b-2 border-white/40 px-1 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm font-medium font-sans text-white">
+            <kbd className="mx-1 border border-b-2 border-white/40 px-1 py-[1px] bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm font-medium font-sans text-white">
               SPACE
             </kbd>{" "}
             to shoot. Hold for more power.
           </p>
-          <p className="text-lg font-normal">
-            Use{" "}
-            <span className="border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
-              <svg
-                width="12"
-                height="10"
-                viewBox="0 0 12 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.7793 4.50879H11.1113V5.5166H2.77832L6.86914 9.63281H5.46875L0.890625 5.0127L5.4834 0.392578H6.88281L2.7793 4.50879Z"
-                  fill="white"
-                />
-              </svg>
-            </span>{" "}
-            and{" "}
-            <span className="border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center gap-2.5 overflow-hidden text-sm">
-              <svg
-                width="12"
-                height="10"
-                viewBox="0 0 12 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.1104 5.0127L6.51855 9.63281H5.11816L9.22168 5.5166H0.890625V4.50879H9.22363L5.13281 0.392578H6.53223L11.1104 5.0127Z"
-                  fill="white"
-                />
-              </svg>
-            </span>{" "}
+          <p className="hidden md:block text-lg font-normal">
+            Use
+            <span className="mx-1 border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center overflow-hidden text-sm">
+              <Image
+                src="/icons/arrow-left.svg"
+                alt="right arrow"
+                width={12}
+                height={10}
+              />
+            </span>
+            and
+            <span className="mx-1 border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center overflow-hidden text-sm">
+              <Image
+                src="/icons/arrow-right.svg"
+                alt="right arrow"
+                width={12}
+                height={10}
+              />
+            </span>
             to move.
           </p>
+
+          <p className="md:hidden text-lg font-normal">
+            Press{" "}
+            <span className="mx-1 border border-b-2 border-white/40 w-6 h-6 p-1 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center overflow-hidden text-sm">
+              <Image
+                src="/icons/crosshair.svg"
+                alt="right arrow"
+                width={16}
+                height={14}
+              />
+            </span>
+            to shoot. Hold for more power.
+          </p>
+          <p className="md:hidden text-lg font-normal">
+            Use
+            <span className="mx-1 border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center overflow-hidden text-sm">
+              <Image
+                src="/icons/arrow-left.svg"
+                alt="right arrow"
+                width={12}
+                height={10}
+              />
+            </span>
+            and
+            <span className="mx-1 border border-b-2 border-white/40 w-5 h-5 bg-white/10 rounded-sm border-offset-[-1px] outline-white/60 inline-flex justify-center items-center overflow-hidden text-sm">
+              <Image
+                src="/icons/arrow-right.svg"
+                alt="right arrow"
+                width={12}
+                height={10}
+              />
+            </span>
+            to move.
+          </p>
+        </div>
+      )}
+
+      {gameState === "playing" && (
+        <div className="md:hidden absolute bottom-4 left-0 right-0 w-full px-4 pointer-events-auto text-white/80">
+          <div className="w-full flex justify-center items-end gap-6">
+            <button
+              type="button"
+              aria-label="Move left"
+              className="flex-1 h-14 bg-white/20 rounded-2xl outline outline-offset-[-1px] outline-white flex justify-center items-center overflow-hidden active:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                gameRef.current?.pressLeft();
+              }}
+              onPointerUp={() => gameRef.current?.releaseLeft()}
+              onPointerCancel={() => gameRef.current?.releaseLeft()}
+              onPointerLeave={() => gameRef.current?.releaseLeft()}
+            >
+              <span className="sr-only">Left</span>
+              <Image
+                src="/icons/arrow-left.svg"
+                alt=""
+                aria-hidden
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Shoot"
+              className="!w-20 !h-20 relative bg-white rounded-3xl outline outline-offset-[-1px] outline-white/20 overflow-hidden flex items-center justify-center active:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/60"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                gameRef.current?.pressShoot();
+              }}
+              onPointerUp={() => gameRef.current?.releaseShoot()}
+              onPointerCancel={() => gameRef.current?.releaseShoot()}
+              onPointerLeave={() => gameRef.current?.releaseShoot()}
+            >
+              <span className="sr-only">Shoot</span>
+              <span
+                aria-hidden
+                className="block !w-10 !h-10"
+                style={{
+                  backgroundColor: "#0227F2",
+                  WebkitMask:
+                    "url(/icons/crosshair.svg) no-repeat center / contain",
+                  mask: "url(/icons/crosshair.svg) no-repeat center / contain",
+                }}
+              />
+            </button>
+            <button
+              type="button"
+              aria-label="Move right"
+              className="flex-1 h-14 bg-white/20 rounded-2xl outline outline-offset-[-1px] outline-white flex justify-center items-center overflow-hidden active:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                gameRef.current?.pressRight();
+              }}
+              onPointerUp={() => gameRef.current?.releaseRight()}
+              onPointerCancel={() => gameRef.current?.releaseRight()}
+              onPointerLeave={() => gameRef.current?.releaseRight()}
+            >
+              <span className="sr-only">Right</span>
+              <Image
+                src="/icons/arrow-right.svg"
+                alt=""
+                aria-hidden
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+            </button>
+          </div>
         </div>
       )}
     </main>
