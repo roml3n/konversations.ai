@@ -81,109 +81,111 @@ const Navbar = () => {
   const iconColor = isScrolled ? "text-neutral-900" : "text-white";
 
   return (
-    <nav className={containerClasses} aria-label="Primary" role="navigation">
-      {/* Logo */}
-      <div className="flex items-center">
-        <Image
-          src="/logo/color-logo.svg"
-          alt="logo"
-          width={120}
-          height={14}
-          className="md:hidden pl-3"
-        />
-        <Image
-          src="/logo/color-logo.svg"
-          alt="logo"
-          width={150}
-          height={18}
-          className="hidden md:block"
-        />
-      </div>
-
-      {/* Center links */}
-      <div className="hidden md:flex items-center gap-6 font-sans font-medium tracking-tight leading-none">
-        <Link
-          href="#"
-          className={linkClasses}
-          tabIndex={0}
-          aria-label="Product"
-        >
-          Product
-        </Link>
-        <Link
-          href="#"
-          className={linkClasses}
-          tabIndex={0}
-          aria-label="Features"
-        >
-          Features
-        </Link>
-      </div>
-
-      {/* Right side: CTA on desktop, hamburger on mobile */}
-      <div className="flex items-center">
-        <div className="hidden md:block">
-          <Button
-            href="#"
-            label="Schedule a demo"
-            variant="secondary"
-            className={[
-              isScrolled
-                ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
-                : "!px-3 !py-2 !font-normal",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+    <>
+      <nav className={containerClasses} aria-label="Primary" role="navigation">
+        {/* Logo */}
+        <div className="flex items-center">
+          <Image
+            src="/logo/color-logo.svg"
+            alt="logo"
+            width={120}
+            height={14}
+            className="md:hidden pl-3"
+          />
+          <Image
+            src="/logo/color-logo.svg"
+            alt="logo"
+            width={150}
+            height={18}
+            className="hidden md:block"
           />
         </div>
 
-        {/* Two-line hamburger icon button */}
-        <button
-          type="button"
-          className={[
-            "md:hidden inline-flex items-center justify-center rounded-md",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/50",
-            "p-2",
-            iconColor,
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-          aria-controls="mobile-menu-panel"
-          onClick={handleToggleMenu}
-          onKeyDown={handleToggleMenu}
-        >
-          {/* Custom two-line icon ("equals" style) */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="28"
-            height="28"
-            className="block"
-            aria-hidden="true"
+        {/* Center links */}
+        <div className="hidden md:flex items-center gap-6 font-sans font-medium tracking-tight leading-none">
+          <Link
+            href="#"
+            className={linkClasses}
+            tabIndex={0}
+            aria-label="Product"
           >
-            <rect
-              x="3"
-              y="7"
-              width="18"
-              height="2"
-              rx="1"
-              className="fill-current"
-            />
-            <rect
-              x="3"
-              y="15"
-              width="18"
-              height="2"
-              rx="1"
-              className="fill-current"
-            />
-          </svg>
-        </button>
-      </div>
+            Product
+          </Link>
+          <Link
+            href="#"
+            className={linkClasses}
+            tabIndex={0}
+            aria-label="Features"
+          >
+            Features
+          </Link>
+        </div>
 
-      {/* Slide-in full-screen mobile menu */}
+        {/* Right side: CTA on desktop, hamburger on mobile */}
+        <div className="flex items-center">
+          <div className="hidden md:block">
+            <Button
+              href="#"
+              label="Schedule a demo"
+              variant="secondary"
+              className={[
+                isScrolled
+                  ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
+                  : "!px-3 !py-2 !font-normal",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            />
+          </div>
+
+          {/* Two-line hamburger icon button */}
+          <button
+            type="button"
+            className={[
+              "md:hidden inline-flex items-center justify-center rounded-md",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-black/50",
+              "p-2",
+              iconColor,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu-panel"
+            onClick={handleToggleMenu}
+            onKeyDown={handleToggleMenu}
+          >
+            {/* Custom two-line icon ("equals" style) */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="28"
+              height="28"
+              className="block"
+              aria-hidden="true"
+            >
+              <rect
+                x="3"
+                y="7"
+                width="18"
+                height="2"
+                rx="1"
+                className="fill-current"
+              />
+              <rect
+                x="3"
+                y="15"
+                width="18"
+                height="2"
+                rx="1"
+                className="fill-current"
+              />
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* Slide-in full-screen mobile menu (outside nav) */}
       <div
         id="mobile-menu-panel"
         role="dialog"
@@ -192,7 +194,9 @@ const Navbar = () => {
           "fixed inset-0 z-[60] md:hidden",
           "bg-black/85 backdrop-blur-xl text-white",
           "transform transition-transform duration-300 ease-out",
-          isMenuOpen ? "translate-x-0" : "translate-x-full",
+          isMenuOpen
+            ? "translate-x-0 opacity-100 pointer-events-auto"
+            : "translate-x-full opacity-0 pointer-events-none",
           "px-4", // 16px horizontal padding
         ]
           .filter(Boolean)
@@ -264,7 +268,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
