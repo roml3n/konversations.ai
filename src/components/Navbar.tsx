@@ -35,6 +35,15 @@ const Navbar = () => {
   const isScrolled = useScrolled();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
+  const handleNavigateTo =
+    (targetId: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setIsMenuOpen(false);
+    };
+
   const handleToggleMenu = (
     event:
       | React.MouseEvent<HTMLButtonElement>
@@ -118,18 +127,20 @@ const Navbar = () => {
         {/* Center links */}
         <div className="hidden md:flex items-center gap-6 font-sans font-medium tracking-tight leading-none">
           <Link
-            href="#"
+            href="#product"
             className={linkClasses}
             tabIndex={0}
             aria-label="Product"
+            onClick={handleNavigateTo("product")}
           >
             Product
           </Link>
           <Link
-            href="#"
+            href="#features"
             className={linkClasses}
             tabIndex={0}
             aria-label="Features"
+            onClick={handleNavigateTo("features")}
           >
             Features
           </Link>
@@ -255,26 +266,26 @@ const Navbar = () => {
             {/* Links */}
             <div className="flex-1 flex flex-col gap-2 pt-4 mb-[108px]">
               <Link
-                href="#"
+                href="#product"
                 className={[
                   "w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal",
                   getStaggerClasses(0),
                 ]
                   .filter(Boolean)
                   .join(" ")}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleNavigateTo("product")}
               >
                 Product
               </Link>
               <Link
-                href="#"
+                href="#features"
                 className={[
                   "w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal",
                   getStaggerClasses(1),
                 ]
                   .filter(Boolean)
                   .join(" ")}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={handleNavigateTo("features")}
               >
                 Features
               </Link>

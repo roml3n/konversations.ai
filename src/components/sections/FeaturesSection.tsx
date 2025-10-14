@@ -3,7 +3,10 @@ import FeatureCard from "../FeatureCard";
 
 const FeaturesSection = () => {
   return (
-    <section className="w-screen py-16 md:py-24 bg-blue-700">
+    <section
+      id="features"
+      className="w-screen py-16 md:py-24 bg-blue-700 scroll-mt-24"
+    >
       <div className="container mx-auto px-4 md:px-16">
         <div className="flex flex-col gap-4 mb-12">
           <h2 className="text-[1.75rem] md:text-4xl lg:text-5xl font-medium font-gotham leading-none tracking-tighter text-white">

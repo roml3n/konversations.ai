@@ -6,7 +6,10 @@ import Image from "next/image";
 const MissionStatement = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   return (
-    <section className="flex items-center container bg-white snap-start">
+    <section
+      id="product"
+      className="flex items-center container bg-white snap-start scroll-mt-24"
+    >
       <div
         ref={containerRef}
         className=" h-[120vh] w-full mx-auto gap-5 px-4 md:mx-24 flex items-center justify-center flex-col"
