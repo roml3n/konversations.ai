@@ -79,6 +79,20 @@ const Navbar = () => {
     : "rounded-full px-4 py-2 hover:bg-white/10";
 
   const iconColor = isScrolled ? "text-neutral-900" : "text-white";
+  const getStaggerClasses = (index: number) => {
+    const openDelays = ["delay-100", "delay-200", "delay-300", "delay-400"];
+    const closeDelays = ["delay-400", "delay-300", "delay-200", "delay-100"];
+    const delayClass =
+      (isMenuOpen ? openDelays : closeDelays)[index] ||
+      (isMenuOpen ? "delay-300" : "delay-100");
+    return [
+      "transition-all duration-300 ease-out will-change-transform",
+      isMenuOpen ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0",
+      delayClass,
+    ]
+      .filter(Boolean)
+      .join(" ");
+  };
 
   return (
     <>
@@ -242,14 +256,24 @@ const Navbar = () => {
             <div className="flex-1 flex flex-col gap-2 pt-4 mb-[108px]">
               <Link
                 href="#"
-                className="w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal"
+                className={[
+                  "w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal",
+                  getStaggerClasses(0),
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Product
               </Link>
               <Link
                 href="#"
-                className="w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal"
+                className={[
+                  "w-full rounded-lg px-3 py-3 hover:bg-black/5 focus:bg-black/5 outline-none text-2xl font-gotham tracking-tight leading-none font-normal",
+                  getStaggerClasses(1),
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Features
@@ -262,7 +286,12 @@ const Navbar = () => {
                 href="#"
                 label="Schedule a demo"
                 variant="primary"
-                className="w-full !py-3 !justify-center !text-center"
+                className={[
+                  "w-full !py-3 !justify-center !text-center",
+                  getStaggerClasses(2),
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
               />
             </div>
           </div>
