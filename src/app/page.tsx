@@ -10,7 +10,40 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <TrustedBySection />
+      <TrustedBySection
+        logos={[
+          {
+            src: "/logo/color-logo.svg",
+            alt: "Konversations",
+            width: 120,
+            height: 20,
+          },
+          {
+            src: "/logo/color-logo.svg",
+            alt: "Konversations",
+            width: 120,
+            height: 20,
+          },
+          {
+            src: "/logo/color-logo.svg",
+            alt: "Konversations",
+            width: 120,
+            height: 20,
+          },
+          {
+            src: "/logo/color-logo.svg",
+            alt: "Konversations",
+            width: 120,
+            height: 20,
+          },
+          {
+            src: "/logo/color-logo.svg",
+            alt: "Konversations",
+            width: 120,
+            height: 20,
+          },
+        ]}
+      />{" "}
       <MissionStatement />
       <FeaturesSection />
       <WhyKonversationsSection />

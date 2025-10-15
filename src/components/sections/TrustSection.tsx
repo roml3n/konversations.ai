@@ -1,7 +1,21 @@
 import React from "react";
+import Image from "next/image";
 import { Marquee } from "../ui/marquee";
+type LogoItem = {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  className?: string;
+};
 
-const TrustedBySection = () => {
+type TrustedBySectionProps = {
+  logos?: LogoItem[];
+};
+
+const DEFAULT_LOGOS: LogoItem[] = [];
+
+const TrustedBySection = ({ logos = DEFAULT_LOGOS }: TrustedBySectionProps) => {
   return (
     <section className="container py-16 md:py-24 bg-white flex flex-col gap-10 md:gap-12 lg:gap-15 overflow-clip">
       <div className="container mx-auto px-4 md:px-16">
@@ -10,10 +24,31 @@ const TrustedBySection = () => {
             Trusted by industry leaders
           </h2>
           <Marquee>
-            <span>Next.js</span>
-            <span>React</span>
-            <span>TypeScript</span>
-            <span>Tailwind CSS</span>
+            {logos.length > 0 ? (
+              logos.map((logo, idx) => (
+                <div
+                  key={`${logo.src}-${idx}`}
+                  className="mx-6 flex items-center justify-center"
+                >
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt ?? "Partner logo"}
+                    width={logo.width ?? 100}
+                    height={logo.height ?? 40}
+                    className={[
+                      "h-5 md:h-7 w-auto object-contain grayscale",
+                      logo.className,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  />
+                </div>
+              ))
+            ) : (
+              <>
+                <span className="text-neutral-500">Add logos to props</span>
+              </>
+            )}
           </Marquee>
         </div>
       </div>
