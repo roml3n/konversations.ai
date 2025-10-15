@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
+import { useContactModal } from "./ContactModalProvider";
 
 const useScrolled = () => {
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -33,6 +34,7 @@ const useScrolled = () => {
 
 const Navbar = () => {
   const isScrolled = useScrolled();
+  const { open } = useContactModal();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const handleNavigateTo =
@@ -153,6 +155,10 @@ const Navbar = () => {
               href="#"
               label="Schedule a demo"
               variant="secondary"
+              onClick={(e) => {
+                e.preventDefault();
+                open();
+              }}
               className={[
                 isScrolled
                   ? "bg-transparent text-neutral-900 hover:bg-neutral-900/5 !px-3 !py-2 bg-gradient-to-l from-[#01E4AC] to-[#0320F5] outline-none"
@@ -297,6 +303,10 @@ const Navbar = () => {
                 href="#"
                 label="Schedule a demo"
                 variant="primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  open();
+                }}
                 className={[
                   "w-full !py-3 !justify-center !text-center",
                   getStaggerClasses(2),

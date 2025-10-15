@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import ContactModalProvider from "@/components/ContactModalProvider";
 
 const instrumentSans = localFont({
   src: [
@@ -97,8 +98,10 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} ${gotham.variable} antialiased tracking-tight mx-auto flex flex-col items-center snap-y snap-mandatory scroll-pt-18`}
       >
-        <Navbar />
-        {children}
+        <ContactModalProvider>
+          <Navbar />
+          {children}
+        </ContactModalProvider>
       </body>
     </html>
   );

@@ -1,9 +1,12 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 // import UnicornScene from "unicornstudio-react/next";
 import Button from "../Button";
+import { useContactModal } from "@/components/ContactModalProvider";
 
 const HeroSection = () => {
+  const { open } = useContactModal();
   return (
     <section
       className="relative overflow-hidden h-fit w-screen mx-auto"
@@ -35,6 +38,10 @@ const HeroSection = () => {
             href="#"
             label="Schedule a demo"
             variant="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              open();
+            }}
             className="px-3 py-2 -md:px-4 md:py-3 lg:px-7 lg:py-4 -md:text-base md:text-lg lg:text-xl"
           />
         </div>
